@@ -51,7 +51,7 @@ public class Board : MonoBehaviour
       int countAnglesRight = AnglesMove.Length - 1;
       float lengthSegment = 1f / (float)countAngles;
       int angleResult = 0;
-      Debug.Log(localPositionX);
+//      Debug.Log(localPositionX);
       foreach( var segment in segmentsBoard )
       for( int i = 0 ; i < segmentsBoard.Count; i++ )
       {

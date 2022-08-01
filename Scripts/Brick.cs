@@ -7,7 +7,6 @@ using UnityEngine;
 public class Brick : MonoBehaviour
 {
   [SerializeField] Ball _ball;
-   public event Action OnHitPlay;  
 
   private void OnEnable()
   {
@@ -21,14 +20,7 @@ public class Brick : MonoBehaviour
 
   private void DestroyBlock( GameObject block )
   {
-      
+
       Destroy(block);
   }
-
-  private void OnDestroy()
-  {
-   // OnHitPlay?.Invoke();
-  }
-
-
 }

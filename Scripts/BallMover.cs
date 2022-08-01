@@ -21,8 +21,6 @@ public class BallMover : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
         _direction = GetMoveDirection( _direction, -5f * Mathf.PI / 180f );
         _ball.Direction = _direction;
-
-        //rigidbody.collisionDetectMode = CollisionDetectionMode.ContinuousDynamic;
     }
 
     private void OnEnable()
@@ -50,6 +48,17 @@ public class BallMover : MonoBehaviour
             _direction = rotateVector;
             _direction.Normalize();
         }
+        
+        if( Vector3.Angle( normal, _direction) < 5 )
+        {
+          _direction = GetMoveDirection( _direction, 5 );
+        }
+
+        if( Vector3.Angle(_ball.Direction,_direction) < 1 )
+        {
+           _direction = GetMoveDirection( _direction, 5 );
+        }
+
         _ball.Direction = _direction;
     }
 
@@ -77,20 +86,8 @@ public class BallMover : MonoBehaviour
         {
            // rigidbody.MovePosition( transform.position + (Vector3)_direction * Time.fixedDeltaTime * Speed );
             rigidbody.velocity = (Vector3)_direction * Time.fixedDeltaTime * GetSpeed() * 50f;
-           // rigidbody.velocity = rigidbody.velocity + _direction * Time.fixedDeltaTime * Speed;
             //rigidbody.AddForce((Vector3)_direction * Time.fixedDeltaTime * Speed,ForceMode2D.Impulse);
         }
-    }
-
-    private void Update()
-    {
-        if( _ball.IsMove )
-        {
-           // transform.Translate((Vector3)_direction * Time.deltaTime * Speed);
-           //rigidbody.position = Vector2.MoveTowards(rigidbody.position, rigidbody.position+_direction, Time.deltaTime * Speed );
-        }
-
-        //Debug.DrawLine(transform.position, transform.position+(Vector3)_direction * 10, Color.cyan);
     }
 
     private float GetSpeed()

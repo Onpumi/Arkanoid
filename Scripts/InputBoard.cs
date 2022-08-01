@@ -10,7 +10,6 @@ public class InputBoard : MonoBehaviour
   public event Action OnMove;
   public event Action OnPress;
   public Vector3 TouchPosition { get; private set; }
-  private float _minSpeedMouse = 0.01f;
 
 
       private void GetNewPosition()
