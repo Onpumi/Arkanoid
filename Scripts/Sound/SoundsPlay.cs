@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SoundsPlay : MonoBehaviour
 {
-   // [SerializeField] Transform _parentBrick;
     [SerializeField] Ball _ball;
     [SerializeField] AudioClip _audioClip;
     private AudioSource _audio;
@@ -32,7 +31,7 @@ public class SoundsPlay : MonoBehaviour
 
     private void PlayHitBall( ) 
     {
-        _audio.time = 0.3f;
+        //_audio.time = 13.95f;
 
        if(Time.time -_time > 0.07f)
        {

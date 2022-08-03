@@ -4,8 +4,18 @@ using UnityEngine;
 
 public class Border : MonoBehaviour
 {
-    private void OnCollisionEnter2D( Collision2D collision )
-    {
+    public float MinHorizontalPosition {get; private set; }
+    public float MaxHorizontalPosition {get; private set; }
 
+    private void Awake()
+    {
+        MinHorizontalPosition = 0;
+        MaxHorizontalPosition = 0;
+        foreach(Transform childBorder in transform)
+        {
+            MinHorizontalPosition = (MinHorizontalPosition > childBorder.position.x) ? (childBorder.position.x) : (MinHorizontalPosition);
+            MaxHorizontalPosition = (MaxHorizontalPosition < childBorder.position.x) ? (childBorder.position.x) : (MaxHorizontalPosition);
+        }
     }
+   
 }

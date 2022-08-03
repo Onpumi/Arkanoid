@@ -7,6 +7,7 @@ public class BallMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private Ball _ball;
+    [SerializeField] private float _limitAngle;
     private Vector2 _direction = new Vector2(0f,1f);
     private Rigidbody2D rigidbody;
 
@@ -26,11 +27,13 @@ public class BallMover : MonoBehaviour
     private void OnEnable()
     {
         _ball.OnHit += HitBlock;
+        _ball.OnFreeze += ResetDirection;
     }
 
     private void OnDisable()
     {
       _ball.OnHit -= HitBlock;
+      _ball.OnFreeze -= ResetDirection;
     }
 
     private void HitBlock( Vector2 normal, int angleBoard )
@@ -48,17 +51,17 @@ public class BallMover : MonoBehaviour
             _direction = rotateVector;
             _direction.Normalize();
         }
+
+        if( Vector3.Angle(_direction, new Vector3(0,1,0)) < _limitAngle || Vector3.Angle(_direction, new Vector3(0,-1,0)) < _limitAngle  )
+        {
+            _direction = GetMoveDirection( _direction, _limitAngle );
+        }
+         else if( Vector3.Angle(_direction, new Vector3(1,0,0)) < _limitAngle || Vector3.Angle(_direction, new Vector3(-1,0,0)) < _limitAngle  )
+        {
+            _direction = GetMoveDirection( _direction, _limitAngle );
+        }
+
         
-        if( Vector3.Angle( normal, _direction) < 5 )
-        {
-          _direction = GetMoveDirection( _direction, 5 );
-        }
-
-        if( Vector3.Angle(_ball.Direction,_direction) < 1 )
-        {
-           _direction = GetMoveDirection( _direction, 5 );
-        }
-
         _ball.Direction = _direction;
     }
 
@@ -88,6 +91,11 @@ public class BallMover : MonoBehaviour
             rigidbody.velocity = (Vector3)_direction * Time.fixedDeltaTime * GetSpeed() * 50f;
             //rigidbody.AddForce((Vector3)_direction * Time.fixedDeltaTime * Speed,ForceMode2D.Impulse);
         }
+    }
+
+    public void ResetDirection()
+    {
+        _direction=-_direction;
     }
 
     private float GetSpeed()

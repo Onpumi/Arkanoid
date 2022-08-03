@@ -8,7 +8,10 @@ public class Board : MonoBehaviour
   [SerializeField] private Color _color;
   [SerializeField] private InputBoard _inputBoard;
   [SerializeField] private Transform _frameParent;
+  [SerializeField] private Border _border;
   [SerializeField] private int[] AnglesMove;
+  [SerializeField] private float _speed;
+  public float Speed => _speed;
   private List<float[]> segmentsBoard = new List<float[]>();
   
 
@@ -40,7 +43,14 @@ public class Board : MonoBehaviour
 
     private void Move()
     {
-        transform.position = _inputBoard.TouchPosition;
+        //transform.position = Vector3.Lerp(transform.position,_inputBoard.TouchPosition,Time.deltaTime * 10);
+        var touchPosition = _inputBoard.TouchPosition;
+        var targetPositionX = transform.position.x  + touchPosition.x;
+        if( targetPositionX < _border.MaxHorizontalPosition + transform.localScale.x && targetPositionX > _border.MinHorizontalPosition - transform.localScale.x )
+        {
+          transform.position = Vector3.MoveTowards(transform.position, touchPosition, Time.deltaTime * Speed);
+          //transform.position = new Vector3 (touchPosition.x, transform.position.y,transform.position.z);
+        }
     }
 
 
@@ -51,7 +61,6 @@ public class Board : MonoBehaviour
       int countAnglesRight = AnglesMove.Length - 1;
       float lengthSegment = 1f / (float)countAngles;
       int angleResult = 0;
-//      Debug.Log(localPositionX);
       foreach( var segment in segmentsBoard )
       for( int i = 0 ; i < segmentsBoard.Count; i++ )
       {
@@ -73,9 +82,3 @@ public class Board : MonoBehaviour
   
 }
 
-
-enum DirectionMove
-{
-    Left = -1,
-    Right = 1
-}
