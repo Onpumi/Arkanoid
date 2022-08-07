@@ -13,25 +13,21 @@ public class Ball : MonoBehaviour
     [SerializeField] private LayerMask _maskaRaycast;
     [SerializeField] private GridBricks _gridBriks;
     public bool IsMove { get; private set; }
+    public Vector2 Target { get; private set; }
     public event Action<Vector2,int> OnHit;
     public event Action OnHitPlay;
     public event Action<GameObject> OnDestroyBlock;
     public event Action OnFreeze;
-    public Vector2 Direction;
     private Vector3 pointHit;
     private Vector3 _prevPosition;
-    
-
 
    private void OnEnable()
    {
-       _inputBoard.OnMove += Move;
       _inputBoard.OnPress += StartMove;
    }
 
    private void OnDisable()
    {
-      _inputBoard.OnMove -= Move;
       _inputBoard.OnPress -= StartMove;
    }
 
@@ -48,17 +44,6 @@ public class Ball : MonoBehaviour
               angleBoard = _board.GetAngleReflect(ballLocalPosition.x);
             }
 
-            //Physics2D.OverlapCircle( transform.position, 0.08f, _maskaRaycast);
-
-             var point = collision.contacts[0].point;
-             Vector2 normal = Vector2.zero;
-             
-             for( int i = 0 ; i < collision.contactCount; i++ )
-             {
-               normal += collision.contacts[i].normal;
-             }
-             normal /= collision.contactCount;
-             //OnHit?.Invoke(normal,angleBoard);
              OnHit?.Invoke(collision.contacts[0].normal,angleBoard);
              OnHitPlay?.Invoke();
 
@@ -68,6 +53,7 @@ public class Ball : MonoBehaviour
             }
         }
    }
+ 
    private void OnCollisionStay2D( Collision2D collision )
    {
 
@@ -78,23 +64,9 @@ public class Ball : MonoBehaviour
             }
    }
 
-   private void Move()
-   {
-        if( IsMove == false )
-        {  /*
-            var xCoordinateBoard = _inputBoard.TouchPosition.x;
-            //transform.position = new Vector3( xCoordinateBoard, transform.position.y, transform.position.y );
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(xCoordinateBoard,transform.position.y, transform.position.y ), Time.deltaTime * _board.Speed);
-            */
-           // transform.position = Vector3.MoveTowards(transform.position, new Vector3(_inputBoard.TouchPosition.x,transform.position.y, transform.position.z ) , Time.deltaTime * _board.Speed);
-            transform.position =   new Vector3(_board.transform.position.x,transform.position.y, transform.position.z );
-            
-        }
-   }
-
    private void StartMove()
    {
-     IsMove = true;
+       IsMove = true;
    }
 
    private bool checkFreezeBall()
@@ -114,9 +86,12 @@ public class Ball : MonoBehaviour
       {
         OnFreeze?.Invoke();
       }
-     // Move();
     //Debug.DrawLine( (Vector3)Position,((Vector3)Position - (Vector3)Normal), Color.green);
     //Debug.DrawRay( (Vector3)Position, - (Vector3)Normal, Color.green);
    }
+
+
+  
+
   
 }

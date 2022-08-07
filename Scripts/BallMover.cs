@@ -7,9 +7,12 @@ public class BallMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private Ball _ball;
+    [SerializeField] private Transform _parentBalls;
+    [SerializeField] private Board _board;
     [SerializeField] private float _limitAngle;
     private Vector2 _direction = new Vector2(0f,1f);
-    private Rigidbody2D rigidbody;
+    private Rigidbody2D _rigidbody;
+    private int countBalls;
 
       public float Speed 
     {
@@ -19,15 +22,15 @@ public class BallMover : MonoBehaviour
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
+        _rigidbody = GetComponent<Rigidbody2D>();
         _direction = GetMoveDirection( _direction, -5f * Mathf.PI / 180f );
-        _ball.Direction = _direction;
     }
 
     private void OnEnable()
     {
         _ball.OnHit += HitBlock;
         _ball.OnFreeze += ResetDirection;
+
     }
 
     private void OnDisable()
@@ -60,9 +63,6 @@ public class BallMover : MonoBehaviour
         {
             _direction = GetMoveDirection( _direction, _limitAngle );
         }
-
-        
-        _ball.Direction = _direction;
     }
 
 
@@ -87,10 +87,14 @@ public class BallMover : MonoBehaviour
     {
         if( _ball.IsMove )
         {
-           // rigidbody.MovePosition( transform.position + (Vector3)_direction * Time.fixedDeltaTime * Speed );
-            rigidbody.velocity = (Vector3)_direction * Time.fixedDeltaTime * GetSpeed() * 50f;
-            //rigidbody.AddForce((Vector3)_direction * Time.fixedDeltaTime * Speed,ForceMode2D.Impulse);
+            _rigidbody.velocity = (Vector3)_direction * Time.fixedDeltaTime * GetSpeed() * 50f;
         }
+        else
+        {
+             var target = new Vector2( _board.transform.position.x, transform.position.y);
+            _rigidbody.position = new Vector2( target.x, _rigidbody.position.y );
+        }
+            
     }
 
     public void ResetDirection()
@@ -103,6 +107,4 @@ public class BallMover : MonoBehaviour
         var speed = _direction.magnitude;
         return Mathf.Max(speed, Speed);
     }
-
-
 }
