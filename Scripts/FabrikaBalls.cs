@@ -6,45 +6,24 @@ using UnityEngine;
 
 public class FabrikaBalls : MonoBehaviour
 {
-    private int countBalls;
-    private Ball[] _balls;
-    private BallMover[] _ballmovers;
-
-    [SerializeField] private BallMover _ballmover;
-    [SerializeField] private Ball _ball;
-    [SerializeField] private A a;
-
-
-
+    private List<Ball> _balls;
+    [SerializeField] private Ball _prefabBall;
 
     private void Awake()
     {
-         Pool<A> pool;
-         IPoolFactory<A> factory = new PrefabFactory<A>(a, transform, "test");
-         factory.Create();
-        pool = new Pool<A>(factory, 10);
 
-        float index = 0;
-        A p = pool.Get();
-        p.transform.position = new Vector3(index, 0f, 0f);
-        index+=1.5f;
-        A b = pool.Get();
-        b.transform.position = new Vector3(index, 0f, 0f);
-        index+=1.5f;
-        pool.Return(b);
-        
+        Pool<Ball> pool;
+        IPoolFactory<Ball> factory = new PrefabFactory<Ball>(_prefabBall, transform, "ball");
+        pool = new Pool<Ball>(factory,50);
 
-        //GameObject ball = Instantiate( _ball.transform.gameObject, _ball.transform.position, Quaternion.identity);
-    }
+        _balls = new List<Ball>();
 
-
-    private void OnEnable()
-    {
-
-    }
-
-
-
-
+        for( int i = 0 ; i < 500 ; i++ )
+        {
+            Ball ball = pool.Get();
+            ball.RandomStartVector(i);
+            _balls.Add( ball );
+        }
     
+     }
 }

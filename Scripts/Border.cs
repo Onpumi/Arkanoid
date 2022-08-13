@@ -8,6 +8,7 @@ public class Border : MonoBehaviour
     public float MaxHorizontalPosition { get; private set; }
     public float FrameWidth { get; private set;  }
 
+    
     private void Awake()
     {
         MinHorizontalPosition = 0;
@@ -19,8 +20,13 @@ public class Border : MonoBehaviour
             MaxHorizontalPosition = (MaxHorizontalPosition < childBorder.position.x) ? (childBorder.position.x) : (MaxHorizontalPosition);
             FrameWidth = (FrameWidth > childBorder.localScale.x) ? (childBorder.localScale.x) : (FrameWidth);
         }
+        
     }
 
 
+    private void Update()
+    {
+
+    }
    
 }
