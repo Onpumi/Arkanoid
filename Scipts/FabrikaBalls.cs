@@ -14,11 +14,11 @@ public class FabrikaBalls : MonoBehaviour
 
         Pool<Ball> pool;
         IPoolFactory<Ball> factory = new PrefabFactory<Ball>(_prefabBall, transform, "ball");
-        pool = new Pool<Ball>(factory,50);
+        pool = new Pool<Ball>(factory,0);
 
         _balls = new List<Ball>();
 
-        for( int i = 0 ; i < 0 ; i++ )
+        for( int i = 0 ; i < 200 ; i++ )
         {
             Ball ball = pool.Get();
             ball.RandomStartVector(i);

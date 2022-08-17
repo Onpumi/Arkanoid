@@ -33,12 +33,14 @@ public class BallMover : MonoBehaviour
     [SerializeField] private Transform circle;
     [SerializeField] private int countColliders;
     [SerializeField] private int countCollisions;
+    [SerializeField] private RayBall _rayBall;
     private List<Collider2D> _colliders;   
     private List<Vector2> _normals;
     private List<ContactPoint2D[]> _contacts;
     private List<Collision2D> _collisions;
     private Dictionary<Transform,Vector2>  _points;
     private HashSet<Transform> _transformsContact;
+    
     
 
       public float Speed 
@@ -47,9 +49,19 @@ public class BallMover : MonoBehaviour
         private set {}
     }
 
+
+    private void OnEnable()
+    {
+       _rayBall.OnStartDirection += SetStartDirection;
+    }
+
+     private void OnDisable()
+    {
+      _rayBall.OnStartDirection -= SetStartDirection;
+    }
  
 
-    private void Awake()
+     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _direction = GetMoveDirection( _direction, -5f * Mathf.PI / 180f );
@@ -62,21 +74,27 @@ public class BallMover : MonoBehaviour
 
     }
 
-    private void Start()
+     private void Start()
     {
-        _direction = GetMoveDirection( _direction, -_ball.StartAngle * Mathf.PI / 180f );
+       // _direction = GetMoveDirection( _direction, -_ball.StartAngle * Mathf.PI / 180f );
     }
 
 
 
-  private void OnCollisionEnter2D( Collision2D collision )
-  {
-   
-    repeatTime = Time.time-enterTime;
-    enterTime = Time.time;
+     private void SetStartDirection( Vector3 direction )
+    {
+     _direction = (Vector2)direction;
+     _direction = GetMoveDirection( _direction, -_ball.StartAngle * Mathf.PI / 180f );
+    }
 
-    _colliders.Add(collision.collider);
-    countColliders = _colliders.Count;
+     private void OnCollisionEnter2D( Collision2D collision )
+    {
+   
+      repeatTime = Time.time-enterTime;
+      enterTime = Time.time;
+
+      _colliders.Add(collision.collider);
+      countColliders = _colliders.Count;
 
 
     countPointContacts = collision.contacts.Length;
@@ -144,7 +162,7 @@ public class BallMover : MonoBehaviour
 
         if( collision.collider.transform.parent == _parentBricks ) 
      {
-        Destroy(collision.collider.transform.gameObject);
+       // Destroy(collision.collider.transform.gameObject);
      }
 
   //  }

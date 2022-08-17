@@ -78,7 +78,7 @@ public class Board : MonoBehaviour
     {
       if( _rayBall.IsDraw == false )
       {
-       Move();
+         Move();
       }
     }
   

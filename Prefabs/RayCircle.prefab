@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2258067617803587160}
   - component: {fileID: 630807419893935311}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RayCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
-  m_Color: {r: 0.5736533, g: 0.9716981, b: 0.30709326, a: 0.4627451}
+  m_Color: {r: 0.5736533, g: 0.9716981, b: 0.30709326, a: 0.19215687}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
