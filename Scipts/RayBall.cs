@@ -7,6 +7,7 @@ public class RayBall : MonoBehaviour
 {
     [SerializeField] private Transform _prefabBall;
     [SerializeField] private Transform _prefabHitBall;
+    [SerializeField] private Transform _prefabNormalBall;
     [SerializeField] private float _step;
     [SerializeField] private int _countStep;
     [SerializeField] private LayerMask _maskaRaycast;
@@ -16,6 +17,9 @@ public class RayBall : MonoBehaviour
     public bool IsDraw { get; private set; }
     private List<Transform> _balls;
     private List<Transform> _hitBalls;
+    private List<Transform[]> _hitNormals;
+
+    private int _sizeNormal = 5;
     private float _scaleBall;
     private float _radiusBall;
     private float SizeBall => _scaleBall * _radiusBall;
@@ -27,6 +31,7 @@ public class RayBall : MonoBehaviour
         IsDraw = false;
         _balls = new List<Transform>();
         _hitBalls = new List<Transform>();
+        _hitNormals = new List<Transform[]>();
         var collider = _ball.GetComponent<CircleCollider2D>();
         _radiusBall = collider.radius;
 
@@ -62,9 +67,43 @@ public class RayBall : MonoBehaviour
         }
     }
 
+    private void ClearHitNormals()
+    {
+        if( _hitNormals.Count > 0) 
+        {
+          foreach( var hitNormal in _hitNormals )
+          {
+              for( int i = 0 ; i < _sizeNormal ; i++ )
+              {
+                Destroy( hitNormal[i].gameObject );
+              }
+          }
+        }
+        _hitNormals.Clear();
+    }
+
+    private void DrawNormal( Vector3 startPosition, Vector3 direction )
+    {
+
+       Transform[] normalBalls = new Transform[_sizeNormal];
+
+       for( int i = 0 ; i < _sizeNormal ; i++ )
+       {
+          normalBalls[i] = Instantiate(_prefabNormalBall, startPosition + (i * _step * 0.5f) * direction, Quaternion.identity);
+       }
+      _hitNormals.Add(normalBalls);
+    }
+
+    private void ClearRay()
+    {
+         ClearBalls();
+         ClearHitBalls();
+         ClearHitNormals();
+    }
+
     private void DrawRay()
     {
-        var startPosition = transform.position;
+        var startPosition = _ball.transform.position;
         var currentPosition = startPosition;
         _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -72,20 +111,19 @@ public class RayBall : MonoBehaviour
 
         IsDraw = true;
 
-         ClearBalls();
-         ClearHitBalls();
+        ClearRay();
 
 
-       Vector3 startRayPosition = transform.position;
+       Vector3 startRayPosition = _ball.transform.position;
        float startStep = 0;
 
        int k = 0;
 
-       for( int i = 0; i < 4 ; i++ )
+       for( int i = 0; i < 1 ; i++ )
      {
         
-         //var hit = Physics2D.CircleCast( startRayPosition + Vector3.one * startStep, SizeBall, targetDirection, Mathf.Infinity, ~_maskaRaycast );
          var hit = Physics2D.CircleCast( startRayPosition + targetDirection.normalized * startStep, SizeBall, targetDirection, Mathf.Infinity, ~_maskaRaycast );
+         //var hit = Physics2D.Raycast( startRayPosition + targetDirection.normalized * startStep, targetDirection, Mathf.Infinity, ~_maskaRaycast );
 
          Vector3 hitPoint = Vector3.zero;
 
@@ -93,6 +131,7 @@ public class RayBall : MonoBehaviour
          {
              hitPoint = (Vector3)hit.point;
             _hitBalls.Add(Instantiate(_prefabHitBall, (Vector3)hitPoint, Quaternion.identity));
+            DrawNormal( hitPoint, hit.normal );
          }
          else
          {
@@ -134,10 +173,9 @@ public class RayBall : MonoBehaviour
 
         if( Input.GetMouseButtonUp(0))
         {
-           ClearBalls();
-           ClearHitBalls(); 
+           ClearRay();
            IsDraw = false;
-           _direction = _target - transform.position;
+           _direction = _target - _ball.transform.position;
            OnStartDirection?.Invoke(_direction);
            enabled = false;
         }

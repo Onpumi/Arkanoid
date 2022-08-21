@@ -2,57 +2,71 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
-using System.Linq;
 
 public class Ball : MonoBehaviour, IPoolable<Ball>
 {
-    [SerializeField] private InputBoard _inputBoard;
-    [SerializeField] private Board _board;
-    [SerializeField] private Transform _parentBlocks;
-    [SerializeField] private LayerMask _maskaRaycast;
-    [SerializeField] private Vector2 _startPosition;
-    public bool IsMove { get; private set; }
-    public Vector2 Target { get; private set; }
-    public event Action<Collision2D,int> OnHit;
-    public event Action OnHitPlay;
-    private Vector3 pointHit;
-    private Vector3 _prevPosition;
-    public float StartAngle {get; private set; }
-    public ContactPoint2D[] ContactsPoint {get; private set; }
-    private float deltaTime;
-    private float prevDeltaTime;
-    public bool IsCollisionEnter {get; set;}
+  [SerializeField] RayBall _rayBall;
+  [SerializeField] private float _speed;
+  [SerializeField] private Transform _parentRemoveBricks;
+  [SerializeField] private FabrikaBalls _factoryBalls;
+  [SerializeField] private Transform _destroyerBorder;
+  private Vector2 _velocity;
+  private Vector2 _prevDirection;
+  public bool IsMove  { get; private set; }
+  public float StartAngle { get; private set; }
+  private Rigidbody2D _rigidbody;
+  public float Radius;
+  public Vector2 Normal;
+  public Vector2 ReflectDirection;
+  public bool IsContact; 
+  public float AnglelNormalDirection;
+  public float AnglelNormalReflect;
+  public float AngelReflectDirection;
+  private float[] _normals;
+  private float _timeDelay = 5f;
 
-
-
-
-      public void RandomStartVector( float delta )
-    {
-        StartAngle = delta;
-    }
-
-
+  
+  
 
    private void Awake()
-   {
-     //transform.position = new Vector3( _startPosition.x, _startPosition.y, transform.position.z );
+  {
 
-     transform.position = new Vector3( _board.transform.position.x, _board.transform.position.y + _board.transform.localScale.y, transform.position.z );
-     ContactsPoint = null;
-     IsCollisionEnter = false;
-   }
-   private void OnEnable()
+//     Array<Vector2> normals = new Array<Vector2>();
+
+    //normals.Add(new Vector2(1,3));
+
+     //for( int i = 0 ; i < normals.Count ; i++ )
+     //Debug.Log(normals[i]);
+      Vector3 v1 = Vector3.up;
+      Vector3 v2 = -v1;
+     //Debug.Log( Vector3.Angle(v1,v2) + " " + Vector3.Angle(v1,-v2) );
+
+    _rigidbody = GetComponent<Rigidbody2D>();
+    IsContact = true;
+    _normals = new float[2];
+    _prevDirection = _velocity = Vector2.zero;
+
+    InvokeRepeating("TestCollinearity", 0, _timeDelay);
+  }
+
+   private void TestCollinearity()
    {
-      _inputBoard.OnPress += StartMove;
+      if( IsMove )
+      {
+        if( Vector3.Angle(_velocity, _prevDirection) == 0 || Vector3.Angle(_velocity, -_prevDirection) == 0)
+        {
+           _velocity = (Vector2)(Quaternion.Euler( 0f, 0f, 5f) * (Vector3)_velocity);
+        }
+      }
+        _prevDirection = _velocity;
    }
 
-   private void OnDisable()
-   {
-      _inputBoard.OnPress -= StartMove;
-   }
+   public void InitVelocity( float angle )
+  {
+      StartAngle = angle;
+  }
 
-  public void SpawnFrom( IPool<Ball> pool )
+   public void SpawnFrom( IPool<Ball> pool )
   {
     transform.gameObject.SetActive(true);
   }
@@ -62,44 +76,118 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     transform.gameObject.SetActive(false);
   }
 
+  private void OnEnable()
+  {
+    _rayBall.OnStartDirection += StartMove; 
+    _factoryBalls.OnReproductionBall += StartMove; 
+  }
 
-   private void OnCollisionEnter2D( Collision2D collision )
-   {
-      ContactsPoint = collision.contacts;
-    deltaTime = Time.time-prevDeltaTime;
-     IsCollisionEnter = true;
-        if( IsMove )
+  private void OnDisable()
+  {
+    _rayBall.OnStartDirection -= StartMove; 
+    _factoryBalls.OnReproductionBall -= StartMove; 
+  }
+
+
+  private void StartMove( Vector3 startDirection )
+  {
+     if( _velocity == Vector2.zero )
+     {
+        _velocity = startDirection * _speed * Time.fixedDeltaTime;
+        if( _velocity.magnitude < 1 )
+       {
+        _velocity.Normalize();
+       }
+       RotateDirection( StartAngle );
+     }
+     IsMove = true;
+  }
+
+  
+
+
+  private void RotateDirection( float angle )
+  {
+     _velocity = Quaternion.Euler(0,0,angle) * _velocity;
+  }
+
+
+
+  private void OnCollisionEnter2D( Collision2D collision )
+  {
+
+
+    ReflectDirection = Vector3.Reflect(_velocity,collision.contacts[0].normal);
+    Normal = collision.contacts[0].normal;
+    AnglelNormalDirection = Vector3.Angle(_velocity.normalized, collision.contacts[0].normal.normalized );
+    AnglelNormalReflect = Vector3.Angle(ReflectDirection.normalized, collision.contacts[0].normal.normalized );
+    AngelReflectDirection = Vector3.Angle(ReflectDirection.normalized, _velocity.normalized);
+    _velocity = ReflectDirection;
+    IsContact = true;
+
+
+    if( _parentRemoveBricks && collision.collider.transform.parent == _parentRemoveBricks) 
+    {
+      Destroy(collision.collider.transform.gameObject);
+    }
+
+     if( _destroyerBorder && collision.collider.transform == _destroyerBorder )
+     {
+      _factoryBalls.DestroyBall(this);
+     }
+
+  }
+
+  private void OnCollisionStay2D( Collision2D collision )
+  {
+
+    Normal = collision.contacts[0].normal;
+
+    if( AnglelNormalReflect > 90 )
+    {
+     // _velocity = Quaternion.Euler(0,0,15) * _velocity;
+      _velocity = Quaternion.Euler(0,0,AnglelNormalReflect) * _velocity;
+    }
+    AnglelNormalReflect = Vector3.Angle(_velocity.normalized, collision.contacts[0].normal.normalized );
+    if( AnglelNormalReflect == 0 )
+    {
+      _velocity = Quaternion.Euler(0,0, 15) * _velocity;
+    }
+    IsContact = true;
+  }
+
+  private void OnCollisionExit2D( Collision2D collision )
+  {
+    Normal = Vector2.zero;
+    IsContact = false;
+  }
+
+
+  private void FixedUpdate()
+  {
+      _rigidbody.velocity = _velocity;
+
+      if( IsNotSpeed() )
+      {
+        GetComponent<SpriteRenderer>().color=Color.red;
+      }
+  }
+
+
+  private bool IsNotSpeed() => ( _velocity.x == 0 && _velocity.y == 0 && IsMove );
+
+
+  private void Update()
+  {
+    //Debug.DrawRay( transform.position, (Vector3)_velocity * 0.01f, Color.red );
+    //Debug.DrawRay( transform.position, (Vector3)Normal * 0.05f, Color.green );
+
+            if( Input.GetKeyDown(KeyCode.Space)) 
         {
- 
-            int angleBoard = 0;
-            Vector2 sumNormal = Vector2.zero;
-            if( _board.transform == collision.transform )
-            {
-              Vector3 nearPointPositionBoard = collision.collider.ClosestPoint(transform.position);
-              Vector3 ballLocalPosition = _board.transform.InverseTransformPoint( nearPointPositionBoard );
-              angleBoard = _board.GetAngleReflect(ballLocalPosition.x);
-            }
-
-             
-
-            if( _parentBlocks == collision.gameObject.transform )
-            {
-             // OnHit?.Invoke(collision,angleBoard);
-             //   _gridBriks.FindCellToDel( collision );
-            }
+            _factoryBalls.SpawnBall( this, 2);
         }
-        prevDeltaTime = Time.time;
-   }
 
- public void Stop()
- {
-   IsMove = false;
- }
+  }
 
 
-   public void StartMove()
-   {
-       IsMove = true;
-   }
- 
 }

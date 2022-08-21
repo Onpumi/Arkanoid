@@ -7,7 +7,7 @@ using UnityEditor;
 public class GridBricks : MonoBehaviour
 {
     [SerializeField] private Ball _ball;
-    [SerializeField] private BallMover _ballmover;
+  //  [SerializeField] private BallMover _ballmover;
     [SerializeField] private GridLayout _gridTiles;
     [SerializeField] private Grid _grid;
     [SerializeField] private Transform _tileMapObject;

@@ -44,8 +44,8 @@ using System.Linq;
 
         public void Return(T poolable)
         {
-            if (_allCreatedObjects.Contains(poolable) == false)
-                throw new ArgumentException(nameof(poolable));
+          //  if (_allCreatedObjects.Contains(poolable) == false)
+                //throw new ArgumentException(nameof(poolable));
             
             _availableObjects.Push(poolable);
             poolable.Despawn();

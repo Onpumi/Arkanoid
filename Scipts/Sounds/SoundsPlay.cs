@@ -20,12 +20,12 @@ public class SoundsPlay : MonoBehaviour
 
     private void OnEnable()
     {
-        _ball.OnHitPlay += PlayHitBall;
+    //    _ball.OnHitPlay += PlayHitBall;
     }
 
     private void OnDisable()
     {
-        _ball.OnHitPlay -= PlayHitBall;
+        //_ball.OnHitPlay -= PlayHitBall;
     }
 
 
