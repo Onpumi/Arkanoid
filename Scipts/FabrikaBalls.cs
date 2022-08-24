@@ -16,6 +16,7 @@ public class FabrikaBalls : MonoBehaviour
 
     public event Action OnDestroyBall;
     public event Action<Vector3> OnReproductionBall;
+    private int countBalls = 1;
 
     private void Awake()
     {
@@ -24,18 +25,8 @@ public class FabrikaBalls : MonoBehaviour
         pool = new Pool<Ball>(factory,5000);
 
         _balls = new HashSet<Ball>();
-
-        for( int i = 0 ; i < 0 ; i++ )
-        {
-            Ball ball = pool.Get();
-            ball.InitVelocity(i*5);
-     //       _balls.Add( ball );
-        }
-
         _startDirection = Vector3.up;
      }
-
-
 
      public void SpawnBall( Ball ballOrigin, int countSpawn )
      {
@@ -46,15 +37,17 @@ public class FabrikaBalls : MonoBehaviour
           ball.transform.position = ballOrigin.transform.position;
           var angleSpawn = UnityEngine.Random.Range(0,360);
           ball.InitVelocity( angleSpawn );
+          countBalls++;
         }
         OnReproductionBall?.Invoke(_startDirection);
      }
      public void DestroyBall( Ball ball )
      {
         pool.Return(ball);
+        countBalls--;
+        if( countBalls <= 0 )
+        {
+            OnDestroyBall?.Invoke();
+        }
      }
-
-
-
-
 }

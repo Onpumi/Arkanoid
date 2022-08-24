@@ -8,10 +8,11 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private Button _playButton;
+    [SerializeField] private SceneLoader _sceneLoader;
 
     public event Action OnPlayButtonClicked;
 
-    public static SceneLoader _sceneLoader;
+    
 
     private void OnEnable()
     {
@@ -30,9 +31,9 @@ public class MainMenu : MonoBehaviour
 
     private void OnPlayClicked()
     {
-        //_sceneLoader.LoadScene(1);
+        _sceneLoader.LoadScene(1);
         //SceneManager.LoadScene(1);
-        SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
+       // SceneManager.LoadSceneAsync(1, LoadSceneMode.Single);
     }    
 
 

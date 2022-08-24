@@ -106,24 +106,15 @@ public class RayBall : MonoBehaviour
         var startPosition = _ball.transform.position;
         var currentPosition = startPosition;
         _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
         var targetDirection = _target-startPosition;
-
         IsDraw = true;
-
         ClearRay();
-
-
-       Vector3 startRayPosition = _ball.transform.position;
-       float startStep = 0;
-
-       int k = 0;
-
-       for( int i = 0; i < 1 ; i++ )
+        Vector3 startRayPosition = _ball.transform.position;
+        float startStep = 0;
+        for( int i = 0; i < 1 ; i++ )
      {
         
          var hit = Physics2D.CircleCast( startRayPosition + targetDirection.normalized * startStep, SizeBall, targetDirection, Mathf.Infinity, ~_maskaRaycast );
-         //var hit = Physics2D.Raycast( startRayPosition + targetDirection.normalized * startStep, targetDirection, Mathf.Infinity, ~_maskaRaycast );
 
          Vector3 hitPoint = Vector3.zero;
 
@@ -151,14 +142,11 @@ public class RayBall : MonoBehaviour
            {
              break;
            }
-           if( k > 100000) { Debug.Log($"зациклено  normal:{(hitPoint-currentPosition).magnitude}"); break;}
-           k++;
         }
 
         startRayPosition = hitPoint;
         targetDirection = Vector3.Reflect(targetDirection.normalized * 0.05f,hit.normal.normalized);
         startStep = _step + 1;
-        
      }
 
         _prevTarget = _target;
@@ -179,8 +167,5 @@ public class RayBall : MonoBehaviour
            OnStartDirection?.Invoke(_direction);
            enabled = false;
         }
-
-        
-
     }
 }

@@ -10,6 +10,8 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
   [SerializeField] private Transform _parentRemoveBricks;
   [SerializeField] private FabrikaBalls _factoryBalls;
   [SerializeField] private Transform _destroyerBorder;
+  [SerializeField] private LayerMask _maskaRaycast;
+  [SerializeField] private Board _board;
   private Vector2 _velocity;
   private Vector2 _prevDirection;
   public bool IsMove  { get; private set; }
@@ -19,34 +21,28 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
   public Vector2 Normal;
   public Vector2 ReflectDirection;
   public bool IsContact; 
-  public float AnglelNormalDirection;
   public float AnglelNormalReflect;
-  public float AngelReflectDirection;
   private float[] _normals;
   private float _timeDelay = 5f;
-
-  
-  
+  private float _timePrev;
+  private float _sizeBall;
+  private float _radiusBall;
+  private Vector2 _prevPosition;
+  private float _prevTime;
+  private float _countCollision = 0;
+  private HashSet<Collision2D> _collisions;
 
    private void Awake()
   {
-
-//     Array<Vector2> normals = new Array<Vector2>();
-
-    //normals.Add(new Vector2(1,3));
-
-     //for( int i = 0 ; i < normals.Count ; i++ )
-     //Debug.Log(normals[i]);
-      Vector3 v1 = Vector3.up;
-      Vector3 v2 = -v1;
-     //Debug.Log( Vector3.Angle(v1,v2) + " " + Vector3.Angle(v1,-v2) );
-
     _rigidbody = GetComponent<Rigidbody2D>();
-    IsContact = true;
+    IsContact = false;
     _normals = new float[2];
     _prevDirection = _velocity = Vector2.zero;
-
     InvokeRepeating("TestCollinearity", 0, _timeDelay);
+    _radiusBall = GetComponent<CircleCollider2D>().radius;
+    _sizeBall = _radiusBall * transform.localScale.x;
+    _collisions = new HashSet<Collision2D>();
+
   }
 
    private void TestCollinearity()
@@ -80,72 +76,79 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
   {
     _rayBall.OnStartDirection += StartMove; 
     _factoryBalls.OnReproductionBall += StartMove; 
+    _board.OnReproductionOne += ActivateBonus;
   }
 
   private void OnDisable()
   {
     _rayBall.OnStartDirection -= StartMove; 
     _factoryBalls.OnReproductionBall -= StartMove; 
+    _board.OnReproductionOne -= ActivateBonus;
   }
-
-
   private void StartMove( Vector3 startDirection )
   {
      if( _velocity == Vector2.zero )
      {
         _velocity = startDirection * _speed * Time.fixedDeltaTime;
-        if( _velocity.magnitude < 1 )
-       {
-        _velocity.Normalize();
-       }
        RotateDirection( StartAngle );
      }
      IsMove = true;
   }
-
-  
-
 
   private void RotateDirection( float angle )
   {
      _velocity = Quaternion.Euler(0,0,angle) * _velocity;
   }
 
-
-
   private void OnCollisionEnter2D( Collision2D collision )
   {
 
-
-    ReflectDirection = Vector3.Reflect(_velocity,collision.contacts[0].normal);
+    Vector2 normal = collision.contacts[0].normal;
+    ReflectDirection = Vector3.Reflect(_velocity.normalized, normal.normalized);
     Normal = collision.contacts[0].normal;
-    AnglelNormalDirection = Vector3.Angle(_velocity.normalized, collision.contacts[0].normal.normalized );
     AnglelNormalReflect = Vector3.Angle(ReflectDirection.normalized, collision.contacts[0].normal.normalized );
-    AngelReflectDirection = Vector3.Angle(ReflectDirection.normalized, _velocity.normalized);
+  //  AngelReflectDirection = Vector3.Angle(ReflectDirection.normalized, _velocity.normalized);
     _velocity = ReflectDirection;
-    IsContact = true;
+    
 
+     _collisions.Add(collision);
 
-    if( _parentRemoveBricks && collision.collider.transform.parent == _parentRemoveBricks) 
+    var deltaPosition = (_rigidbody.position-_prevPosition).magnitude;
+    var deltaTime = Time.time - _prevTime;
+
+    
+    if( _parentRemoveBricks && collision.collider.transform.parent == _parentRemoveBricks  ) 
     {
-      Destroy(collision.collider.transform.gameObject);
+       Destroy(collision.collider.transform.gameObject);
+       _prevPosition = _rigidbody.position;
+       _prevTime = Time.time;
     }
+    
+  IsContact = true;
 
      if( _destroyerBorder && collision.collider.transform == _destroyerBorder )
      {
-      _factoryBalls.DestroyBall(this);
+         _factoryBalls.DestroyBall(this);
      }
 
+     _timePrev = Time.time;
   }
 
   private void OnCollisionStay2D( Collision2D collision )
   {
+   //  _rigidbody.velocity = Vector2.zero;
+    var buffDirection = _velocity;
 
     Normal = collision.contacts[0].normal;
+    if( _parentRemoveBricks && collision.collider.transform.parent == _parentRemoveBricks) 
+    {
+     // return;
+    }
+
+   //IsContact = false;
 
     if( AnglelNormalReflect > 90 )
     {
-     // _velocity = Quaternion.Euler(0,0,15) * _velocity;
       _velocity = Quaternion.Euler(0,0,AnglelNormalReflect) * _velocity;
     }
     AnglelNormalReflect = Vector3.Angle(_velocity.normalized, collision.contacts[0].normal.normalized );
@@ -153,41 +156,48 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     {
       _velocity = Quaternion.Euler(0,0, 15) * _velocity;
     }
-    IsContact = true;
+    //IsContact = true;
   }
 
   private void OnCollisionExit2D( Collision2D collision )
   {
     Normal = Vector2.zero;
-    IsContact = false;
+      _countCollision=0;
+
+    _collisions.Remove(collision);
+
+      IsContact = false;
+      _countCollision--;
+  }
+
+  public void ActivateBonus()
+  {
+     _factoryBalls.SpawnBall( this, 2);
   }
 
 
   private void FixedUpdate()
-  {
-      _rigidbody.velocity = _velocity;
-
-      if( IsNotSpeed() )
-      {
-        GetComponent<SpriteRenderer>().color=Color.red;
-      }
+  {   
+      _rigidbody.velocity = _velocity.normalized * _speed * Time.fixedDeltaTime ;
   }
-
-
-  private bool IsNotSpeed() => ( _velocity.x == 0 && _velocity.y == 0 && IsMove );
-
 
   private void Update()
   {
     //Debug.DrawRay( transform.position, (Vector3)_velocity * 0.01f, Color.red );
     //Debug.DrawRay( transform.position, (Vector3)Normal * 0.05f, Color.green );
+    //_rigidbody.velocity = _velocity;
+  //  Debug.Log(_countCollision);
+     if( Input.GetKeyDown(KeyCode.Space)) 
+   {
+    _factoryBalls.SpawnBall( this, 2);
+   }
 
-            if( Input.GetKeyDown(KeyCode.Space)) 
-        {
-            _factoryBalls.SpawnBall( this, 2);
-        }
-
+    if(Input.GetMouseButtonDown(0))
+   {
+      if( Input.mousePosition.y > 150)
+      {
+        //_factoryBalls.SpawnBall(this,2);
+      }
+   }
   }
-
-
 }

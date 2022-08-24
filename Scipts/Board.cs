@@ -16,6 +16,8 @@ public class Board : MonoBehaviour
   public float Speed => _speed;
   private List<float[]> _segmentsBoard = new List<float[]>();
   public event Action OnMove;
+  public event Action OnReproductionOne;
+  
 
     private void Awake()
     {
@@ -25,14 +27,29 @@ public class Board : MonoBehaviour
       float[] segment = { 0f, lengthSegment };
       _rigidbody = GetComponent<Rigidbody2D>();
 
-
       for( int i = 1 ; i < countAnglesRight + 2 ; i++ )
      {
         _segmentsBoard.Add(new float[2]{ lengthSegment * (float)(i-1), lengthSegment * (float)(i) }); 
      }
 
+
     }
 
+    private void OnCollisionEnter2D( Collision2D collision )
+    {
+
+       if( collision.collider.TryGetComponent(out BonusBall bonusBall) )
+       {
+
+          if( bonusBall.ReturnBonus() != null )
+          {
+             bonusBall.ActivateBonus( OnReproductionOne );
+          } 
+          Destroy( bonusBall.transform.gameObject );
+       }
+
+
+    }
 
     private void Move()
     {
