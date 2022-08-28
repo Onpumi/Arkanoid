@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5593196489066801012}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -2.5, z: 0}
   m_LocalScale: {x: 0.04, y: 0.04, z: 0.6198152}
   m_Children: []
@@ -135,17 +135,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rayBall: {fileID: 0}
-  _speed: 100
+  _speed: 200
   _parentRemoveBricks: {fileID: 0}
   _factoryBalls: {fileID: 0}
   _destroyerBorder: {fileID: 0}
   _maskaRaycast:
     serializedVersion: 2
     m_Bits: 64
+  _board: {fileID: 0}
+  _startPosition: {x: 0, y: -2.8, z: 0}
   Radius: 0
   Normal: {x: 0, y: 0}
   ReflectDirection: {x: 0, y: 0}
   IsContact: 0
-  AnglelNormalDirection: 0
   AnglelNormalReflect: 0
-  AngelReflectDirection: 0
