@@ -1,5 +1,5 @@
 
 public interface IHealthView 
 {
-   void DisplayCount( int count );
+   void DisplayItems( int count );
 }

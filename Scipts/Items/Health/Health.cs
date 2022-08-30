@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Health : IHealth
 {
+   private readonly IHealthView _healthView;
    private readonly int _maxValue;
    private readonly int _maxStartValue;
    private const int MinValue = 0;
@@ -12,8 +13,9 @@ public class Health : IHealth
    public int CurrentValue {get; private set; }
    public event Action OnLossHealth;
 
-   public Health(int maxStartValue, int maxValue)
+   public Health( int maxStartValue, int maxValue, IHealthView healthView )
    {
+      _healthView = healthView;
       if( maxValue < maxStartValue )
       {
         throw new ArgumentException("max must be more than maxStart!");
@@ -27,6 +29,7 @@ public class Health : IHealth
       _maxStartValue = maxStartValue;
       _maxValue = maxValue;
       CurrentValue = maxStartValue;
+      _healthView.DisplayItems( CurrentValue );
    }
 
    public bool CanTakeDamage => CurrentValue > 0;
@@ -38,10 +41,13 @@ public class Health : IHealth
         CurrentValue--;
       }
 
-      if( CurrentValue == 0)
+      _healthView.DisplayItems( CurrentValue );
+
+        if( CurrentValue == 0)
       {
         OnLossHealth?.Invoke();
       }
+
    }
 
    public void AddValue()
@@ -55,4 +61,9 @@ public class Health : IHealth
         CurrentValue++;
       }
    }
+
+  public void Restore()
+  {
+    CurrentValue = _maxStartValue;
+  }
 }

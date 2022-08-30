@@ -14,6 +14,7 @@ public class Board : MonoBehaviour
   [SerializeField] private RayBall _rayBall;
   [SerializeField] private FabrikaBalls _factoryBalls;
   [SerializeField] private SceneLoader _sceneLoader;
+  [SerializeField] private HealthView _healthView;
   private Rigidbody2D _rigidbody;
   public Health Health { get; private set; }
   public float Speed => _speed;
@@ -22,7 +23,6 @@ public class Board : MonoBehaviour
   public event Action OnReproductionOne;
 
   
-
     private void Awake()
     {
       int countAngles = _anglesMove.Length * 2 - 1;
@@ -35,8 +35,10 @@ public class Board : MonoBehaviour
      {
         _segmentsBoard.Add(new float[2]{ lengthSegment * (float)(i-1), lengthSegment * (float)(i) }); 
      }
-
-      Health = new Health( 3, 5 );
+      
+      Health = new Health( 3, 5, _healthView );
+//      Debug.Log(Health.CurrentValue);
+      _healthView.DisplayItems( Health.CurrentValue );
     }
 
     private void OnEnable()
