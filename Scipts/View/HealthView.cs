@@ -6,13 +6,17 @@ public class HealthView : MonoBehaviour, IHealthView
 {
    [SerializeField] private Transform _prefabImage;
    [SerializeField] private Transform _grid;
+   [SerializeField] private Transform _borderUP;
    private Transform  _parentImage;
    private List<Transform> _objectsImage;
-   private Vector3 nextPosition( Transform prevItem ) => new Vector3( prevItem.position.x + _grid.localScale.x * 3, prevItem.position.y, prevItem.position.z );
+   private float _stepDraw;
+
+
 
     public void DisplayItems( int count )
     {
       _parentImage = this.transform;
+      _stepDraw = _prefabImage.GetComponent<RectTransform>().rect.width;
 
       if( _objectsImage == null )
       {
@@ -26,10 +30,8 @@ public class HealthView : MonoBehaviour, IHealthView
              for( int i = 0 ; i < count; i++)
              {
                 _objectsImage.Add( Instantiate( _prefabImage, _parentImage ) );
-                  if( i > 0 )
-                  {
-                    _objectsImage[i].position = nextPosition( _objectsImage[i-1] );
-                  }
+                var screen = new Vector2 (Screen.width - Screen.width/4f + _stepDraw * i, Screen.height - _stepDraw);
+               _objectsImage[i].position = Camera.main.ScreenToWorldPoint(screen);
              }
           }
           else

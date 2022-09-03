@@ -45,7 +45,6 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     _sizeBall = _radiusBall * transform.localScale.x;
     _collisions = new HashSet<Collision2D>();
     transform.position = _startPosition;
-
   }
 
   public void StateStart()

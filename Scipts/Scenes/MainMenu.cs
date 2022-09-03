@@ -9,10 +9,7 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private Button _playButton;
     [SerializeField] private SceneLoader _sceneLoader;
-
     public event Action OnPlayButtonClicked;
-
-    
 
     private void OnEnable()
     {
@@ -22,11 +19,6 @@ public class MainMenu : MonoBehaviour
     private void OnDisable()
     {
       _playButton.onClick.AddListener(OnPlayClicked);
-    }
-
-    void Start()
-    {
-        _sceneLoader = new SceneLoader();
     }
 
     private void OnPlayClicked()

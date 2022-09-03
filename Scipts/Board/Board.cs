@@ -13,14 +13,15 @@ public class Board : MonoBehaviour
   [SerializeField] private float _speed;
   [SerializeField] private RayBall _rayBall;
   [SerializeField] private FabrikaBalls _factoryBalls;
-  [SerializeField] private SceneLoader _sceneLoader;
   [SerializeField] private HealthView _healthView;
+  [SerializeField] LossView _lossView;
   private Rigidbody2D _rigidbody;
   public Health Health { get; private set; }
   public float Speed => _speed;
   private List<float[]> _segmentsBoard = new List<float[]>();
   public event Action OnMove;
   public event Action OnReproductionOne;
+  public event Action<LossView,Transform> OnLostAll;
 
   
     private void Awake()
@@ -37,7 +38,6 @@ public class Board : MonoBehaviour
      }
       
       Health = new Health( 3, 5, _healthView );
-//      Debug.Log(Health.CurrentValue);
       _healthView.DisplayItems( Health.CurrentValue );
     }
 
@@ -95,9 +95,8 @@ public class Board : MonoBehaviour
 
     private void FinishLevel()
     {
-
-      Debug.Log("ПРОИГРЫШ!");
-      _sceneLoader.RestartLevel();
+        Debug.Log("ПРОИГРЫШ!");
+        OnLostAll?.Invoke( _lossView, this.transform );
     }
 
     public int GetAngleReflect( float localPositionX )

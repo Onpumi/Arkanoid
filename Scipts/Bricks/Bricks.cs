@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +10,12 @@ public class Bricks : MonoBehaviour
     [SerializeField] FabrikaBalls _factoryBalls;
     [SerializeField] Transform _parentBalls;
     [SerializeField] Board _board;
+    [SerializeField] LossView _winView;
     private Brick[] _bricks;
     private List<BonusBall> _bonuses;
     private int _countBricks;
+
+    public event Action<LossView,Transform> OnDestroyAllBricks;
     
     
     private void Awake()
@@ -47,7 +51,7 @@ public class Bricks : MonoBehaviour
         {
            for( int i = 0 ; i < bonus.Count ; i++ )
            {
-              var index = Random.Range(0,_bricks.Length);
+              var index = UnityEngine.Random.Range(0,_bricks.Length);
               GiveBonus( bonus, index );
               
            }
@@ -63,7 +67,15 @@ public class Bricks : MonoBehaviour
                 bonus.transform.gameObject.SetActive(false);
             }
         }
+    }
 
+    public void UpdateBricks()
+    {
+        _countBricks--;
+        if( _countBricks <= 0 )
+        {
+            OnDestroyAllBricks?.Invoke(_winView,this.transform);
+        }
     }
 
 

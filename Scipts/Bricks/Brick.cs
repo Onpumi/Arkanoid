@@ -7,9 +7,14 @@ using UnityEngine.EventSystems;
 public class Brick : MonoBehaviour
 {
    private BonusBall _bonusBall = null;
+   private Bricks _bricks;
    public bool IsNull { get => (_bonusBall == null) ? (true) : (false); }
    public BonusBall BonusBall => _bonusBall;
 
+   private void Awake()
+   {
+      _bricks = transform.parent.GetComponent<Bricks>();
+   }
 
    public void TakeBonus( BonusBall prefabBonus, Transform _parentBalls, Board board )
    {
@@ -26,6 +31,8 @@ public class Brick : MonoBehaviour
 
    private void OnDestroy()
    {
+      _bricks.UpdateBricks();
+
          if( _bonusBall != null )
          {
             _bonusBall.transform.gameObject.SetActive(true);
