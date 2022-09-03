@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class LossMenu : MonoBehaviour, IPointerDownHandler
+public class ItemMenu : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private SelectFromLoss _changeFromLoss;
     public event Action<SelectFromLoss> OnChangeFromLoss;

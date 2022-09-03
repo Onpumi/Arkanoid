@@ -7,8 +7,8 @@ public class GameHandler : MonoBehaviour
    
    [SerializeField] Transform _ballsParent;
    [SerializeField] SceneLoader _sceneLoader;
-   [SerializeField] LossView _lossView;
-   [SerializeField] LossView _winView;
+   [SerializeField] MenuEndView _lossView;
+   [SerializeField] MenuEndView _winView;
    [SerializeField] Board _board;
    [SerializeField] Bricks _bricks;
    [SerializeField] FabrikaBalls _factoryBalls;
@@ -33,6 +33,7 @@ public class GameHandler : MonoBehaviour
       _board.OnLostAll += FrozeLevel;
       _bricks.OnDestroyAllBricks += FrozeLevel;
       SignTheView( _lossView );
+      SignTheView( _winView );
    }
 
    private void OnDisable()
@@ -44,7 +45,7 @@ public class GameHandler : MonoBehaviour
    }
 
 
-   void SignTheView( LossView viewFinishMenu )
+   void SignTheView( MenuEndView viewFinishMenu )
    {
        int index;
 
@@ -85,17 +86,20 @@ public class GameHandler : MonoBehaviour
       _sceneLoader.RestartLevel();
    }
 
-   private void FrozeLevel( LossView view, Transform sendObject )
+   private void FrozeLevel( MenuEndView view, Transform sendObject )
    {
       _ballsParent.gameObject.SetActive(false);
+     if( sendObject != null )
+     {
       sendObject.gameObject.SetActive(false);
+     }
       view.transform.gameObject.SetActive(true);
    }
 
 
    private void ChangeAfterLost( SelectFromLoss change )
    {
-      _bricks.enabled = false;
+     // _bricks.enabled = false;
 
       if( change == SelectFromLoss.Repeat )
       {

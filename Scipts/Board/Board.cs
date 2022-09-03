@@ -14,14 +14,14 @@ public class Board : MonoBehaviour
   [SerializeField] private RayBall _rayBall;
   [SerializeField] private FabrikaBalls _factoryBalls;
   [SerializeField] private HealthView _healthView;
-  [SerializeField] LossView _lossView;
+  [SerializeField] private MenuEndView _lossView;
   private Rigidbody2D _rigidbody;
   public Health Health { get; private set; }
   public float Speed => _speed;
   private List<float[]> _segmentsBoard = new List<float[]>();
   public event Action OnMove;
   public event Action OnReproductionOne;
-  public event Action<LossView,Transform> OnLostAll;
+  public event Action<MenuEndView,Transform> OnLostAll;
 
   
     private void Awake()

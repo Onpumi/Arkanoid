@@ -98,9 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 0
-  _count: 10
+  _count: 8
   _speed: 1
-  _ball: {fileID: 0}
 --- !u!58 &1129697464212338427
 CircleCollider2D:
   m_ObjectHideFlags: 0

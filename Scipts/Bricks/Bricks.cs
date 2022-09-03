@@ -10,12 +10,12 @@ public class Bricks : MonoBehaviour
     [SerializeField] FabrikaBalls _factoryBalls;
     [SerializeField] Transform _parentBalls;
     [SerializeField] Board _board;
-    [SerializeField] LossView _winView;
+    [SerializeField] MenuEndView _winView;
     private Brick[] _bricks;
     private List<BonusBall> _bonuses;
     private int _countBricks;
 
-    public event Action<LossView,Transform> OnDestroyAllBricks;
+    public event Action<MenuEndView,Transform> OnDestroyAllBricks;
     
     
     private void Awake()
@@ -74,7 +74,10 @@ public class Bricks : MonoBehaviour
         _countBricks--;
         if( _countBricks <= 0 )
         {
-            OnDestroyAllBricks?.Invoke(_winView,this.transform);
+            if(this.transform != null && _winView != null)
+            {
+              OnDestroyAllBricks?.Invoke(_winView,this.transform);
+            }
         }
     }
 

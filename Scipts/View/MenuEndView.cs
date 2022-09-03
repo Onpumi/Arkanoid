@@ -13,7 +13,7 @@ public enum SelectFromLoss
     Exit
 }
 
-public class LossView : MonoBehaviour
+public class MenuEndView : MonoBehaviour
 {
     void Awake()
     {

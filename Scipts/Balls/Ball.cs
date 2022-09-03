@@ -19,31 +19,21 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
   public float StartAngle { get; private set; }
   private Rigidbody2D _rigidbody;
   public float Radius;
-  public Vector2 Normal;
   public Vector2 ReflectDirection;
-  public bool IsContact; 
   public float AnglelNormalReflect;
-  private float[] _normals;
   private float _timeDelay = 5f;
   private float _timePrev;
   private float _sizeBall;
   private float _radiusBall;
-  private Vector2 _prevPosition;
-  private float _prevTime;
-  private float _countCollision = 0;
-  private HashSet<Collision2D> _collisions;
+  private float _prevTime = 0;
   public Vector3 StartPosition => _startPosition;
 
    private void Awake()
   {
     _rigidbody = GetComponent<Rigidbody2D>();
-    IsContact = false;
-    _normals = new float[2];
-    _prevDirection = _velocity = Vector2.zero;
     InvokeRepeating("TestCollinearity", 0, _timeDelay);
     _radiusBall = GetComponent<CircleCollider2D>().radius;
     _sizeBall = _radiusBall * transform.localScale.x;
-    _collisions = new HashSet<Collision2D>();
     transform.position = _startPosition;
   }
 
@@ -116,48 +106,33 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
 
     Vector2 normal = collision.contacts[0].normal;
     ReflectDirection = Vector3.Reflect(_velocity.normalized, normal.normalized);
-    Normal = collision.contacts[0].normal;
     AnglelNormalReflect = Vector3.Angle(ReflectDirection.normalized, collision.contacts[0].normal.normalized );
-  //  AngelReflectDirection = Vector3.Angle(ReflectDirection.normalized, _velocity.normalized);
     _velocity = ReflectDirection;
-    
-
-     _collisions.Add(collision);
-
-    var deltaPosition = (_rigidbody.position-_prevPosition).magnitude;
-    var deltaTime = Time.time - _prevTime;
-
     
     if( _parentRemoveBricks && collision.collider.transform.parent == _parentRemoveBricks  ) 
     {
-       Destroy(collision.collider.transform.gameObject);
-       _prevPosition = _rigidbody.position;
-       _prevTime = Time.time;
+       if( _prevTime != 0 && Time.time-_prevTime >= 0.02 )
+       {
+         Destroy(collision.collider.transform.gameObject);
+         _prevTime = Time.time;
+       }
+       else if( _prevTime == 0 )
+       {
+         Destroy(collision.collider.transform.gameObject);
+         _prevTime = Time.time;
+       }
     }
-    
-  IsContact = true;
 
      if( _destroyerBorder && collision.collider.transform == _destroyerBorder )
      {
          _factoryBalls.DestroyBall(this);
      }
 
-     _timePrev = Time.time;
   }
 
   private void OnCollisionStay2D( Collision2D collision )
   {
-   //  _rigidbody.velocity = Vector2.zero;
-    var buffDirection = _velocity;
-
-    Normal = collision.contacts[0].normal;
-    if( _parentRemoveBricks && collision.collider.transform.parent == _parentRemoveBricks) 
-    {
-     // return;
-    }
-
-   //IsContact = false;
-
+ 
     if( AnglelNormalReflect > 90 )
     {
       _velocity = Quaternion.Euler(0,0,AnglelNormalReflect) * _velocity;
@@ -167,18 +142,6 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     {
       _velocity = Quaternion.Euler(0,0, 15) * _velocity;
     }
-    //IsContact = true;
-  }
-
-  private void OnCollisionExit2D( Collision2D collision )
-  {
-    Normal = Vector2.zero;
-      _countCollision=0;
-
-    _collisions.Remove(collision);
-
-      IsContact = false;
-      _countCollision--;
   }
 
   public void ActivateBonus()
@@ -192,25 +155,4 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
       _rigidbody.velocity = _velocity.normalized * _speed * Time.fixedDeltaTime ;
   }
 
-  private void Update()
-  {
-    //Debug.DrawRay( transform.position, (Vector3)_velocity * 0.01f, Color.red );
-    //Debug.DrawRay( transform.position, (Vector3)Normal * 0.05f, Color.green );
-    //_rigidbody.velocity = _velocity;
-  //  Debug.Log(_countCollision);
-
-          if( Input.GetKeyDown(KeyCode.Space)) 
-        {
-         _factoryBalls.SpawnBall( this, 2);
-        }  
-
-
-    if(Input.GetMouseButtonDown(0))
-   {
-      if( Input.mousePosition.y > 150)
-      {
-        //_factoryBalls.SpawnBall(this,2);
-      }
-   }
-  }
 }
