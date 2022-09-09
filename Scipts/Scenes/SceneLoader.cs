@@ -7,7 +7,6 @@ public class SceneLoader : MonoBehaviour
 
     public void RestartLevel()
     {
-
       SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex ); 
     }
 
@@ -15,5 +14,10 @@ public class SceneLoader : MonoBehaviour
     {
       CurrentScene = numberScene;
       SceneManager.LoadScene( numberScene );
+    }
+
+    public void NextLevel()
+    {
+      SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex + 1 ); 
     }
 }

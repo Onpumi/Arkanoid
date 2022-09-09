@@ -49,7 +49,6 @@ public class FabrikaBalls : MonoBehaviour
          return pool.Get();
      }
 
-
      public void DestroyBall( Ball ball )
      {
         pool.Return(ball);
@@ -59,4 +58,6 @@ public class FabrikaBalls : MonoBehaviour
             OnLossAllBalls?.Invoke();
         }
      }
+
+
 }

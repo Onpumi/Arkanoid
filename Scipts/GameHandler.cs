@@ -12,7 +12,6 @@ public class GameHandler : MonoBehaviour
    [SerializeField] Board _board;
    [SerializeField] Bricks _bricks;
    [SerializeField] FabrikaBalls _factoryBalls;
-   [SerializeField] Ball _prefabBall;
    private List<ItemMenu> itemsMenu = new List<ItemMenu>();
    public Vector3 StartPositionBoard { get; private set; }
    public Vector3 StartPositionBall { get; private set; }
@@ -23,9 +22,6 @@ public class GameHandler : MonoBehaviour
       StartPositionBall = _ballsParent.transform.GetChild(0).transform.position;
       StartPositionBoard = _board.transform.position;
    }
-
-
-
 
    private void OnEnable()
    {
@@ -44,13 +40,10 @@ public class GameHandler : MonoBehaviour
       UnsubscribeViews();
    }
 
-
    void SignTheView( MenuEndView viewFinishMenu )
    {
        int index;
-
        index = itemsMenu.Count;
-
 
        foreach( Transform item in viewFinishMenu.transform )
       {
@@ -99,7 +92,6 @@ public class GameHandler : MonoBehaviour
 
    private void ChangeAfterLost( SelectFromLoss change )
    {
-     // _bricks.enabled = false;
 
       if( change == SelectFromLoss.Repeat )
       {
@@ -112,6 +104,10 @@ public class GameHandler : MonoBehaviour
       else if( change == SelectFromLoss.Exit)
       {
         Application.Quit();
+      }
+      else if( change == SelectFromLoss.Next)
+      {
+         _sceneLoader.NextLevel();
       }
 
    }

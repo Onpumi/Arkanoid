@@ -53,7 +53,6 @@ public class Bricks : MonoBehaviour
            {
               var index = UnityEngine.Random.Range(0,_bricks.Length);
               GiveBonus( bonus, index );
-              
            }
         }
     }
@@ -80,7 +79,6 @@ public class Bricks : MonoBehaviour
             }
         }
     }
-
 
     private void GiveBonus( BonusBall bonus, int indexBrick )
     {

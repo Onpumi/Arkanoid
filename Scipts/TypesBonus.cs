@@ -10,7 +10,6 @@ public class TypesBonus
     public void Init()
     {
         Dictionary<TypeBonus,EventBonus> _bonuses = new Dictionary<TypeBonus,EventBonus>();
-//        bonuses[TypeBonus.ReproductionOne] = new ReproductionOne();
     }
 
     public EventBonus GetBonus( TypeBonus type )

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8433906103096651639}
   - component: {fileID: 5530068490512111969}
   - component: {fileID: 5699619832812767416}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: brick_yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.64, y: 0.64}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -181,4 +181,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e52874b02f9a2cf44ae64ebabe17dce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _factory: {fileID: 0}

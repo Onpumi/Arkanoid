@@ -111,7 +111,7 @@ public class RayBall : MonoBehaviour
         ClearRay();
         Vector3 startRayPosition = _ball.StartPosition;
         float startStep = 0;
-        for( int i = 0; i < 1 ; i++ )
+        for( int i = 0; i < 2 ; i++ )
      {
         
          var hit = Physics2D.CircleCast( startRayPosition + targetDirection.normalized * startStep, SizeBall, targetDirection, Mathf.Infinity, ~_maskaRaycast );
@@ -122,7 +122,7 @@ public class RayBall : MonoBehaviour
          {
              hitPoint = (Vector3)hit.point;
             _hitBalls.Add(Instantiate(_prefabHitBall, (Vector3)hitPoint, Quaternion.identity));
-            DrawNormal( hitPoint, hit.normal );
+           // DrawNormal( hitPoint, hit.normal );
          }
          else
          {
@@ -148,7 +148,6 @@ public class RayBall : MonoBehaviour
         targetDirection = Vector3.Reflect(targetDirection.normalized * 0.05f,hit.normal.normalized);
         startStep = _step + 1;
      }
-
         _prevTarget = _target;
     }
 
@@ -163,7 +162,6 @@ public class RayBall : MonoBehaviour
         {
            ClearRay();
            IsDraw = false;
-           //_direction = _target - _ball.transform.position;
            _direction = _target - _ball.StartPosition;
            OnStartDirection?.Invoke(_direction);
            enabled = false;
