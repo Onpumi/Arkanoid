@@ -95,7 +95,7 @@ public class Board : MonoBehaviour
 
     private void FinishLevel()
     {
-        Debug.Log("ПРОИГРЫШ!");
+        //Debug.Log("ПРОИГРЫШ!");
         OnLostAll?.Invoke( _lossView, this.transform );
     }
 
@@ -126,6 +126,8 @@ public class Board : MonoBehaviour
       {
          Move();
       }
+
+
     }
   
 }

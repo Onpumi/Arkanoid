@@ -122,11 +122,6 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     if( IsMove )
     {
       _rigidbody.velocity = _velocity.normalized * _speed * Time.fixedDeltaTime ;
-
-        if( _prevPosition == transform.position )
-      {
-       // _velocity = -_velocity;
-      }
        _prevPosition = transform.position;
     }
 

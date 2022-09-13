@@ -388,4 +388,4 @@ MonoBehaviour:
   _prefabButton: {fileID: 739524999441936808, guid: d413f063139a34049a86765ba8d608d1, type: 3}
   _offset: 10
   _space: 5
-  _topPaddingSize: 15
+  _topPaddingSize: 150

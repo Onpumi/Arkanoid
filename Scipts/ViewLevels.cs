@@ -26,15 +26,18 @@ public class ViewLevels : MonoBehaviour
    {
       _scaleButton = _prefabButton.transform.localScale;
        var rect = _prefabButton.GetComponent<RectTransform>().rect;
-      _widthButton = rect.width;
-      _heightButton = rect.height;
+      var countButtonRow = 3;
+      var sizeButton = Screen.width / (countButtonRow+1);
+      var scale = sizeButton/rect.width;
+      _widthButton = rect.width * scale;
+      _heightButton = rect.height * scale;
       _maxPositionX = Screen.width - _widthButton / 2f;
       _minPositionX = _widthButton / 2f;
       _maxPositionY = 0 + _heightButton / 2f + _offset;
       _minPositionY = Screen.height - _heightButton / 2f - _offset;
       var lengthX = Mathf.Round(_maxPositionX - _minPositionX);
       _countX = (int) (lengthX / (_widthButton));
-      var spaceStartEnd = (Screen.width - lengthX - (_space*_countX-1) ) ;
+      var spaceStartEnd = (Screen.width - lengthX - (_space*countButtonRow) - _widthButton / 4f  ) ;
       Vector3 position;
       var startXPosition = _minPositionX + spaceStartEnd;
       var startYPosition = _minPositionY - _topPaddingSize;
@@ -47,6 +50,7 @@ public class ViewLevels : MonoBehaviour
           var button = Instantiate(_prefabButton,transform);
           position = new Vector3( startXPosition + (_widthButton +_space) * i, startYPosition  ,0);
           button.transform.position = position;
+          button.transform.localScale = new Vector3(scale,scale,scale);
           button.transform.GetChild(0).GetComponent<TextLevel>().InitTitle( countButton + 1 );
           countButton++;
           if( countButton >= countLevels)
@@ -57,13 +61,5 @@ public class ViewLevels : MonoBehaviour
         startYPosition -= _heightButton + _space;
         countRows++;
       }
-   }
-
-   private Vector3 GetPositionButton( int indexLevel, Vector3 scaleButton )
-   {
-         float y = Screen.width;
-         float x = _scaleButton.x / 2f +_offset;
-         Vector3 result = Vector3.zero;
-         return result;
    }
 }

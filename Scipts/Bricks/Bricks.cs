@@ -73,7 +73,7 @@ public class Bricks : MonoBehaviour
         _countBricks--;
         if( _countBricks <= 0 )
         {
-            if(this.transform != null && _winView != null)
+            if( _winView != null )
             {
               OnDestroyAllBricks?.Invoke(_winView,this.transform);
             }

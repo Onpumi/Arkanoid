@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GameHandler : MonoBehaviour
 {
-   
    [SerializeField] Transform _ballsParent;
    [SerializeField] SceneLoader _sceneLoader;
    [SerializeField] MenuEndView _lossView;
@@ -84,7 +83,7 @@ public class GameHandler : MonoBehaviour
       _ballsParent.gameObject.SetActive(false);
      if( sendObject != null )
      {
-      sendObject.gameObject.SetActive(false);
+     // sendObject.gameObject.SetActive(false);
      }
       view.transform.gameObject.SetActive(true);
    }
@@ -112,5 +111,11 @@ public class GameHandler : MonoBehaviour
 
    }
 
-
+   private void Update()
+   {
+       if( Input.GetAxis("Cancel") > 0 )
+       {
+         FrozeLevel( _lossView, _board.transform );
+       }
+   }
 }

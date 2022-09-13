@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5593196489066801014}
   - component: {fileID: 5593196489066801015}
   - component: {fileID: 5593196489066801011}
+  - component: {fileID: 8186656962495015017}
   m_Layer: 7
   m_Name: Ball
   m_TagString: Untagged
@@ -136,16 +137,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rayBall: {fileID: 0}
   _speed: 200
-  _parentRemoveBricks: {fileID: 0}
   _factoryBalls: {fileID: 0}
-  _destroyerBorder: {fileID: 0}
-  _maskaRaycast:
-    serializedVersion: 2
-    m_Bits: 64
   _board: {fileID: 0}
   _startPosition: {x: 0, y: -2.8, z: 0}
-  Radius: 0
-  Normal: {x: 0, y: 0}
-  ReflectDirection: {x: 0, y: 0}
-  IsContact: 0
-  AnglelNormalReflect: 0
+  _ballCollision: {fileID: 8186656962495015017}
+  Magnitude: 0
+  Velocity: {x: 0, y: 0}
+--- !u!114 &8186656962495015017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5593196489066801012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c23f44ce43bda5b418bc54acdaee98b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _parentRemoveBricks: {fileID: 0}
+  _destroyerBorder: {fileID: 0}
+  Normal:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
