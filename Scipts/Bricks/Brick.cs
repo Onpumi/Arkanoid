@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class Brick : MonoBehaviour
 {
@@ -16,18 +12,14 @@ public class Brick : MonoBehaviour
       _bricks = transform.parent.GetComponent<Bricks>();
    }
 
-   public void TakeBonus( BonusBall prefabBonus, Transform _parentBalls, Board board )
+     public void InitBonus( BonusBall prefabBonus )
    {
-
       _bonusBall = Instantiate( prefabBonus, transform.position, Quaternion.identity, transform.parent );
       _bonusBall.transform.localScale = transform.localScale;
       _bonusBall.transform.gameObject.SetActive(false);
    }
 
-     public BonusBall GetBonus()
-   {
-      return _bonusBall;
-   }
+   public BonusBall GetBonus() => _bonusBall;
 
    private void OnDestroy()
    {

@@ -12,7 +12,7 @@ public class Board : MonoBehaviour
   [SerializeField] private int[] _anglesMove;
   [SerializeField] private float _speed;
   [SerializeField] private RayBall _rayBall;
-  [SerializeField] private FabrikaBalls _factoryBalls;
+  [SerializeField] private FactoryBalls _factoryBalls;
   [SerializeField] private HealthView _healthView;
   [SerializeField] private MenuEndView _lossView;
   private Rigidbody2D _rigidbody;
@@ -21,7 +21,7 @@ public class Board : MonoBehaviour
   private List<float[]> _segmentsBoard = new List<float[]>();
   public event Action OnMove;
   public event Action OnReproductionOne;
-  public event Action<MenuEndView,Transform> OnLostAll;
+  public event Action<MenuEndView> OnLostAll;
 
   
     private void Awake()
@@ -66,7 +66,6 @@ public class Board : MonoBehaviour
           Destroy( bonusBall.transform.gameObject );
        }
 
-
     }
 
     private void Move()
@@ -95,8 +94,7 @@ public class Board : MonoBehaviour
 
     private void FinishLevel()
     {
-        //Debug.Log("ПРОИГРЫШ!");
-        OnLostAll?.Invoke( _lossView, this.transform );
+        OnLostAll?.Invoke( _lossView );
     }
 
     public int GetAngleReflect( float localPositionX )
@@ -126,8 +124,6 @@ public class Board : MonoBehaviour
       {
          Move();
       }
-
-
     }
   
 }

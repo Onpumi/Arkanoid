@@ -7,7 +7,7 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
 {
   [SerializeField] RayBall _rayBall;
   [SerializeField] private float _speed;
-  [SerializeField] private FabrikaBalls _factoryBalls;
+  [SerializeField] private FactoryBalls _factoryBalls;
   [SerializeField] private Board _board;
   [SerializeField] private Vector3 _startPosition;
   [SerializeField] private BallCollision _ballCollision;
@@ -29,6 +29,12 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     InvokeRepeating("TestCollinearity", 0, _timeDelay);
     transform.position = _startPosition;
     _velocity = Vector2.zero;
+  }
+
+  private void Start()
+  {
+   // _rigidbody.velocity = Vector2.zero;
+    //IsMove = false;
   }
 
   public void StateStart()
@@ -115,6 +121,12 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
   private void UpdateVelocity( Vector2 velocity )
   {
     _velocity = velocity;
+  }
+
+  public void StopBall()
+  {
+    _velocity = Vector2.zero;
+    IsMove = false;
   }
 
   private void FixedUpdate()

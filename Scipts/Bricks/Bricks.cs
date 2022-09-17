@@ -7,15 +7,13 @@ public class Bricks : MonoBehaviour
 {
 
     [SerializeField] BonusBall[] _bonusPrefabs;
-    [SerializeField] FabrikaBalls _factoryBalls;
-    [SerializeField] Transform _parentBalls;
+    [SerializeField] FactoryBalls _factoryBalls;
     [SerializeField] Board _board;
     [SerializeField] MenuEndView _winView;
     private Brick[] _bricks;
     private List<BonusBall> _bonuses;
     private int _countBricks;
-
-    public event Action<MenuEndView,Transform> OnDestroyAllBricks;
+    public event Action<MenuEndView> OnDestroyAllBricks;
     
     
     private void Awake()
@@ -24,6 +22,7 @@ public class Bricks : MonoBehaviour
         _bricks = new Brick[_countBricks];
         _bonuses = new List<BonusBall>();
         Color cls = new Color( 0f,1f,0.5f, 1f);
+     
         for( int i = 0 ; i < _countBricks ; i++ )
         {
             _bricks[i] = transform.GetChild(i).GetComponent<Brick>();
@@ -31,7 +30,6 @@ public class Bricks : MonoBehaviour
         }
 
         InitBonuses();
-        
     }
 
     private void OnEnable()
@@ -75,7 +73,7 @@ public class Bricks : MonoBehaviour
         {
             if( _winView != null )
             {
-              OnDestroyAllBricks?.Invoke(_winView,this.transform);
+              OnDestroyAllBricks?.Invoke(_winView);
             }
         }
     }
@@ -88,7 +86,7 @@ public class Bricks : MonoBehaviour
         }
         if( indexBrick < _bricks.Length )
         {
-           _bricks[indexBrick].TakeBonus( bonus, _parentBalls, _board );
+           _bricks[indexBrick].InitBonus( bonus );
            _bonuses.Add( _bricks[indexBrick].GetBonus() );
         }
     }

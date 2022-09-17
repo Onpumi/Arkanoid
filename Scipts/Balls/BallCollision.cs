@@ -6,7 +6,7 @@ public class BallCollision : MonoBehaviour
     [SerializeField] private Transform _parentRemoveBricks;
     [SerializeField] private Transform _destroyerBorder;
     [SerializeField] private SoundsPlayer _soundPlayer;
-    private float _prevTime = 0;
+    private BallTime _ballTime;
     private Vector2 _reflectDirection;
     private float _anglelNormalReflect;
     private Vector2 _velocity;
@@ -17,18 +17,19 @@ public class BallCollision : MonoBehaviour
      private void Awake()
      {
         _velocity = Vector2.zero;
+        _ballTime = new BallTime();
      }
 
      private void OnCollisionEnter2D( Collision2D collision )
   {
-       
-
-    if( (_prevTime != 0 && Time.time-_prevTime >= 0.02) || _prevTime == 0 )
+      if( _ballTime.isNeedTime() )
    {
-    if( _soundPlayer.isCanPlay )
-    _soundPlayer.PlayHitBall();
-
-    Vector2 normal = collision.contacts[0].normal;
+       if( _soundPlayer.isCanPlay )
+       {
+        _soundPlayer.PlayHitBall();
+       }
+  
+      Vector2 normal = collision.contacts[0].normal;
 
       if( collision.contacts.Length > 1 )
       {
@@ -49,7 +50,7 @@ public class BallCollision : MonoBehaviour
     if( _parentRemoveBricks && collision.collider.transform.parent == _parentRemoveBricks  ) 
     {
          Destroy(collision.collider.transform.gameObject);
-         _prevTime = Time.time;
+         _ballTime.FixedTime( Time.time );
     }
 
      if( _destroyerBorder && collision.collider.transform == _destroyerBorder )
@@ -62,9 +63,9 @@ public class BallCollision : MonoBehaviour
 
   private void OnCollisionStay2D( Collision2D collision )
   {
-    if( (_prevTime != 0 && Time.time-_prevTime >= 0.02) || _prevTime == 0 )
+      if( _ballTime.isNeedTime() )
     {
-       var angleRandom = UnityEngine.Random.Range(0,5);
+       var angleRandom = UnityEngine.Random.Range(5,10);
       _velocity = Quaternion.Euler(0,0,angleRandom) * _velocity;
 
       if( _anglelNormalReflect > 90 )
@@ -80,23 +81,24 @@ public class BallCollision : MonoBehaviour
     }
   }
 
+  public void SetVelocity( Vector2 velocity )
+  {
+    _velocity = velocity;
+  }
+#if UNITY_EDITOR
+ 
   private void OnCollisionExit2D( Collision2D collision )
   {
     Normal[0] = Vector2.zero;
     Normal[1] = Vector2.zero;
   }
 
-
-  public void SetVelocity( Vector2 velocity )
+  private void Update()
   {
-    _velocity = velocity;
+    Debug.DrawRay( transform.position, 0.05f * Normal[0], Color.green);
+    Debug.DrawRay( transform.position, 0.05f * Normal[1], Color.blue);
+    Debug.DrawRay( transform.position, 0.05f * _velocity, Color.red);
   }
-
- // private void Update()
- // {
- //   Debug.DrawRay( transform.position, 0.05f * Normal[0], Color.green);
-  //  Debug.DrawRay( transform.position, 0.05f * Normal[1], Color.blue);
-  //  Debug.DrawRay( transform.position, 0.05f * _velocity, Color.red);
-// }
+#endif
   
 }

@@ -7,7 +7,6 @@ public class Border : MonoBehaviour
     public float MinHorizontalPosition { get; private set; }
     public float MaxHorizontalPosition { get; private set; }
     public float FrameWidth { get; private set;  }
-
     
     private void Awake()
     {
@@ -22,11 +21,4 @@ public class Border : MonoBehaviour
         }
         
     }
-
-
-    private void Update()
-    {
-
-    }
-   
 }

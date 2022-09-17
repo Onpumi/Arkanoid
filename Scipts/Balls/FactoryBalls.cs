@@ -6,7 +6,7 @@ using UnityEngine;
 
 
 
-public class FabrikaBalls : MonoBehaviour
+public class FactoryBalls : MonoBehaviour
 {
     private HashSet<Ball> _balls;
     Pool<Ball> pool;

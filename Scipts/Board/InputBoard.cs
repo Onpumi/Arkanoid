@@ -23,12 +23,6 @@ public class InputBoard : MonoBehaviour
              OnPress?.Invoke();
            }
         }
-
-      //  if( Input.GetKeyDown(KeyCode.Escape))
-      //  {
-       //    Application.Quit();
-      //  }
     }
-
 
 }

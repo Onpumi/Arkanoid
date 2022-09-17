@@ -3045,8 +3045,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 308673336}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3, z: 0}
-  m_LocalScale: {x: 0.76076, y: 0.47435063, z: 1}
+  m_LocalPosition: {x: -0.002, y: -3.0169, z: 0}
+  m_LocalScale: {x: 0.5967401, y: 0.38982135, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -3080,7 +3080,7 @@ MonoBehaviour:
   _frameParent: {fileID: 1526920687}
   _border: {fileID: 1526920688}
   _anglesMove: 00000000050000000a0000000f00000014000000190000001e00000023000000
-  _speed: 5
+  _speed: 5.5
   _rayBall: {fileID: 308673343}
   _factoryBalls: {fileID: 1663575449}
   _healthView: {fileID: 1372851628}
@@ -6009,7 +6009,7 @@ GameObject:
   - component: {fileID: 665037899}
   - component: {fileID: 665037903}
   - component: {fileID: 665037902}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12674,10 +12674,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1079383082}
-  - component: {fileID: 1079383081}
   - component: {fileID: 1079383083}
+  - component: {fileID: 1079383081}
   m_Layer: 0
-  m_Name: GameHandler
+  m_Name: GameControl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19340,7 +19340,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1697706533}
   - component: {fileID: 1697706532}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20804,7 +20804,6 @@ MonoBehaviour:
   - {fileID: 5618815628612127423, guid: 5224ae5e8a98b804eabded78d01e7e72, type: 3}
   - {fileID: 3541844646735535426, guid: 484c6a59affdbf843a85e025cc69042f, type: 3}
   _factoryBalls: {fileID: 1663575449}
-  _parentBalls: {fileID: 1663575448}
   _board: {fileID: 308673342}
   _winView: {fileID: 204428835}
 --- !u!4 &1856217489 stripped

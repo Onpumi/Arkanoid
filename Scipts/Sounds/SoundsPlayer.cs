@@ -18,19 +18,8 @@ public class SoundsPlayer : MonoBehaviour
 
        public void PlayHitBall() 
     {
-
-//       if(Time.time -_time > 0.03f )
-//       {
-          _audio.PlayOneShot(_audioClip);
-          
-//       }
+       _audio.PlayOneShot(_audioClip);
        _time = Time.time;
     }
-
-    private void Update()
-    {
-        
-    }
-
 
 }

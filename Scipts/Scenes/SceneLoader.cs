@@ -4,6 +4,22 @@ using UnityEngine.SceneManagement;
 public class SceneLoader : MonoBehaviour
 {
     public int CurrentScene { get; private set; }
+    public bool isLoad = false;
+
+    private void OnEnable()
+    {
+       SceneManager.sceneLoaded += LoadActive;
+    }
+
+    private void OnDisable()
+    {
+       SceneManager.sceneLoaded -= LoadActive;
+    }
+
+    private void LoadActive( Scene scene, LoadSceneMode mode )
+    {
+      isLoad = true;
+    }
 
     public void RestartLevel()
     {

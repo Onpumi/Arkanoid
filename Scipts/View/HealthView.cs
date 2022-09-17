@@ -12,7 +12,6 @@ public class HealthView : MonoBehaviour, IHealthView
    private float _stepDraw;
 
 
-
     public void DisplayItems( int count )
     {
       _parentImage = this.transform;

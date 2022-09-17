@@ -13,13 +13,13 @@ public enum TypeBonus
 
 public interface EventBonus
 {
-   void  ActivateAction( FabrikaBalls factoryBalls, Ball ball );
+   void  ActivateAction( FactoryBalls factoryBalls, Ball ball );
    void ActivateAll( Action action );
 }
 
 class ReproductionOne : EventBonus
 {
-    public void  ActivateAction( FabrikaBalls factoryBalls, Ball ball )
+    public void  ActivateAction( FactoryBalls factoryBalls, Ball ball )
     {
         factoryBalls.SpawnBall( ball, 3);
     }
@@ -57,8 +57,7 @@ public class BonusBall : MonoBehaviour
        }
     }
 
-
-    private void ActivateBonus(FabrikaBalls factoryBalls, Ball ball)
+    private void ActivateBonus(FactoryBalls factoryBalls, Ball ball)
     {
         if( EventBonus != null )
         {

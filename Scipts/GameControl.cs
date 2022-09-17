@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameHandler : MonoBehaviour
+public class GameControl : MonoBehaviour
 {
    [SerializeField] Transform _ballsParent;
    [SerializeField] SceneLoader _sceneLoader;
@@ -10,7 +10,7 @@ public class GameHandler : MonoBehaviour
    [SerializeField] MenuEndView _winView;
    [SerializeField] Board _board;
    [SerializeField] Bricks _bricks;
-   [SerializeField] FabrikaBalls _factoryBalls;
+   [SerializeField] FactoryBalls _factoryBalls;
    private List<ItemMenu> itemsMenu = new List<ItemMenu>();
    public Vector3 StartPositionBoard { get; private set; }
    public Vector3 StartPositionBall { get; private set; }
@@ -78,13 +78,13 @@ public class GameHandler : MonoBehaviour
       _sceneLoader.RestartLevel();
    }
 
-   private void FrozeLevel( MenuEndView view, Transform sendObject )
+   private void FrozeLevel( MenuEndView view )
    {
+      //foreach( Transform childBall in _ballsParent.transform )
+      //{
+         //childBall.GetComponent<Ball>().StopBall();
+      //}
       _ballsParent.gameObject.SetActive(false);
-     if( sendObject != null )
-     {
-     // sendObject.gameObject.SetActive(false);
-     }
       view.transform.gameObject.SetActive(true);
    }
 
@@ -115,7 +115,7 @@ public class GameHandler : MonoBehaviour
    {
        if( Input.GetAxis("Cancel") > 0 )
        {
-         FrozeLevel( _lossView, _board.transform );
+         FrozeLevel( _lossView );
        }
    }
 }
