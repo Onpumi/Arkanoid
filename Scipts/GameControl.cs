@@ -11,7 +11,10 @@ public class GameControl : MonoBehaviour
    [SerializeField] Board _board;
    [SerializeField] Bricks _bricks;
    [SerializeField] FactoryBalls _factoryBalls;
+   [SerializeField] StatusesGame _statusesGame;
+   private IStateGame _stateGame;
    private List<ItemMenu> itemsMenu = new List<ItemMenu>();
+   private RayBall _rayball;
    public Vector3 StartPositionBoard { get; private set; }
    public Vector3 StartPositionBall { get; private set; }
 
@@ -20,6 +23,8 @@ public class GameControl : MonoBehaviour
    {
       StartPositionBall = _ballsParent.transform.GetChild(0).transform.position;
       StartPositionBoard = _board.transform.position;
+      _rayball =_board.GetComponent<RayBall>();
+      _stateGame = _statusesGame.RunningGame;
    }
 
    private void OnEnable()
@@ -39,7 +44,7 @@ public class GameControl : MonoBehaviour
       UnsubscribeViews();
    }
 
-   void SignTheView( MenuEndView viewFinishMenu )
+   private void SignTheView( MenuEndView viewFinishMenu )
    {
        int index;
        index = itemsMenu.Count;
@@ -55,7 +60,7 @@ public class GameControl : MonoBehaviour
       }
    }
 
-   void UnsubscribeViews( )
+   private void UnsubscribeViews( )
    {
        foreach( ItemMenu itemMenu in itemsMenu )
       {
@@ -63,29 +68,42 @@ public class GameControl : MonoBehaviour
       }
    }
 
+   public void SetStatusRun( bool isRun )
+   {
+      if( isRun )
+      {
+        _stateGame = _statusesGame.RunningGame;
+      }
+      else
+      {
+        _stateGame = _statusesGame.FrozenGame;
+      }
+   }
+
+   
 
    private void ResetGame()
    {
        _board.transform.position = StartPositionBoard;
        Ball ball = _factoryBalls.SpawnBall();
        ball.StateStart();
-       var rayball =_board.GetComponent<RayBall>();
-       rayball.enabled = true;
+       _rayball.enabled = true;
    }
 
    private void RestartLevel()
    {
-      _sceneLoader.RestartLevel();
+      _sceneLoader.RestartLevel( );
    }
 
    private void FrozeLevel( MenuEndView view )
    {
-      //foreach( Transform childBall in _ballsParent.transform )
-      //{
-         //childBall.GetComponent<Ball>().StopBall();
-      //}
-      _ballsParent.gameObject.SetActive(false);
+      _ballsParent?.gameObject.SetActive(false);
       view.transform.gameObject.SetActive(true);
+      if( _rayball )
+      {
+       _rayball.enabled = false;
+      }
+      SetStatusRun( false );
    }
 
 
@@ -106,7 +124,7 @@ public class GameControl : MonoBehaviour
       }
       else if( change == SelectFromLoss.Next)
       {
-         _sceneLoader.NextLevel();
+         _sceneLoader.NextLevel( this );
       }
 
    }

@@ -31,12 +31,6 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     _velocity = Vector2.zero;
   }
 
-  private void Start()
-  {
-   // _rigidbody.velocity = Vector2.zero;
-    //IsMove = false;
-  }
-
   public void StateStart()
   {
      IsMove = false;

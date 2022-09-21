@@ -21,6 +21,7 @@ public class Board : MonoBehaviour
   private List<float[]> _segmentsBoard = new List<float[]>();
   public event Action OnMove;
   public event Action OnReproductionOne;
+  public event Action OnReproductionTwo;
   public event Action<MenuEndView> OnLostAll;
 
   
@@ -59,13 +60,16 @@ public class Board : MonoBehaviour
        if( collision.collider.TryGetComponent(out BonusBall bonusBall) )
        {
 
-          if( bonusBall.ReturnBonus() != null )
+          if( bonusBall.Type == TypeBonus.ReproductionOne )
           {
              bonusBall.ActivateBonus( OnReproductionOne );
           } 
+          else if( bonusBall.Type == TypeBonus.ReproductionTwo )
+          {
+             bonusBall.ActivateBonus( OnReproductionTwo );
+          }
           Destroy( bonusBall.transform.gameObject );
        }
-
     }
 
     private void Move()

@@ -3,8 +3,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class SceneLoader : MonoBehaviour
 {
+    [SerializeField] StatusesGame _statusesGame;
     public int CurrentScene { get; private set; }
     public bool isLoad = false;
+    
 
     private void OnEnable()
     {
@@ -21,8 +23,9 @@ public class SceneLoader : MonoBehaviour
       isLoad = true;
     }
 
-    public void RestartLevel()
+    public void RestartLevel( )
     {
+     // game.SetStatusRun( true );
       SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex ); 
     }
 
@@ -32,8 +35,9 @@ public class SceneLoader : MonoBehaviour
       SceneManager.LoadScene( numberScene );
     }
 
-    public void NextLevel()
+    public void NextLevel( GameControl game )
     {
+      game.SetStatusRun( true );
       SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex + 1 ); 
     }
 }

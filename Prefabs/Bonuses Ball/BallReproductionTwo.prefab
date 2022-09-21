@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 1
-  _count: 5
+  _count: 15
   _speed: 1
 --- !u!50 &-4379292831240087699
 Rigidbody2D:

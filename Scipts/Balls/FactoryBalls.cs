@@ -28,14 +28,34 @@ public class FactoryBalls : MonoBehaviour
         _startDirection = Vector3.up;
      }
 
-     public void SpawnBall( Ball ballOrigin, int countSpawn )
+     public void SpawnBall( Ball ballOrigin, int countSpawn, Transform startPoint = null, float[] anglesSpawn = null )
      {
 
         for( int i = 0 ; i < countSpawn ; i++ )
         {
           Ball ball = pool.Get();
-          ball.transform.position = ballOrigin.transform.position;
-          var angleSpawn = UnityEngine.Random.Range(0,360);
+          if( startPoint == null )
+          {
+            ball.transform.position = ballOrigin.transform.position;
+          }
+          else
+          {
+            ball.transform.position = startPoint.position + Vector3.up * startPoint.localScale.y;
+          }
+          float angleSpawn = 0;
+          if( anglesSpawn == null )
+          {
+            angleSpawn = UnityEngine.Random.Range(0,360);
+            ball.InitVelocity( angleSpawn );
+          }
+          else if( anglesSpawn.Length >= countSpawn )
+          {
+            angleSpawn = anglesSpawn[i];
+          }
+          else
+          {
+             throw new Exception("");
+          }
           ball.InitVelocity( angleSpawn );
           countBalls++;
         }

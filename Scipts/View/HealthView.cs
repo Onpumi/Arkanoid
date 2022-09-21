@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class HealthView : MonoBehaviour, IHealthView
 {
    [SerializeField] private Transform _prefabImage;
@@ -42,4 +43,5 @@ public class HealthView : MonoBehaviour, IHealthView
           }
       }
     }
+    
 }

@@ -23,7 +23,10 @@ public class Brick : MonoBehaviour
 
    private void OnDestroy()
    {
-      _bricks.UpdateBricks();
+         if( _bricks ) 
+         {
+           _bricks.UpdateBricks();
+         }
 
          if( _bonusBall != null )
          {

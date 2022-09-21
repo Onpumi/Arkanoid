@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Bricks : MonoBehaviour
 {
-
     [SerializeField] BonusBall[] _bonusPrefabs;
+  //  [SerializeField] Transform _bonusParentPrefab;
     [SerializeField] FactoryBalls _factoryBalls;
     [SerializeField] Board _board;
     [SerializeField] MenuEndView _winView;
@@ -14,10 +14,12 @@ public class Bricks : MonoBehaviour
     private List<BonusBall> _bonuses;
     private int _countBricks;
     public event Action<MenuEndView> OnDestroyAllBricks;
-    
+    //private BonusBall[] _bonusBalls;
+    [SerializeField] private TestSO _testSO;
     
     private void Awake()
     {
+
         _countBricks = transform.childCount;
         _bricks = new Brick[_countBricks];
         _bonuses = new List<BonusBall>();
@@ -30,6 +32,12 @@ public class Bricks : MonoBehaviour
         }
 
         InitBonuses();
+    }
+
+    private void Start()
+    {
+        Debug.Log(_testSO._bonusBalls.Length);
+
     }
 
     private void OnEnable()
@@ -73,13 +81,14 @@ public class Bricks : MonoBehaviour
         {
             if( _winView != null )
             {
-              OnDestroyAllBricks?.Invoke(_winView);
+             OnDestroyAllBricks?.Invoke(_winView);
             }
         }
     }
 
     private void GiveBonus( BonusBall bonus, int indexBrick )
     {
+        if( _bricks == null || _bricks.Length == 0 ) { return; }
         while( _bricks[indexBrick].IsNull != true && indexBrick < _bricks.Length )
         {
             indexBrick++;
