@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
+using Unity.Burst;
 
+[BurstCompile]
 public class BallCollision : MonoBehaviour
 {
-    [SerializeField] private Transform _parentRemoveBricks;
     [SerializeField] private Transform _destroyerBorder;
     [SerializeField] private SoundsPlayer _soundPlayer;
     private BallTime _ballTime;
@@ -12,12 +13,14 @@ public class BallCollision : MonoBehaviour
     private Vector2 _velocity;
     public event Action OnDestroyBall;
     public event Action<Vector2> OnCollisionBall;
-    public Vector3[] Normal = new Vector3[2];
+    private Vector3[] Normal = new Vector3[2];
+    private Rigidbody2D _rigidbody;
 
      private void Awake()
      {
         _velocity = Vector2.zero;
         _ballTime = new BallTime();
+        _rigidbody = GetComponent<Rigidbody2D>();
      }
 
      private void OnCollisionEnter2D( Collision2D collision )
@@ -31,35 +34,22 @@ public class BallCollision : MonoBehaviour
   
       Vector2 normal = collision.contacts[0].normal;
 
-      if( collision.contacts.Length > 1 )
-      {
-         Normal[1] = collision.contacts[1].normal;
-         if( Vector3.Angle(Normal[0],Normal[1]) >= 90 )
-         {
-            normal = Normal[0].normalized + Normal[1].normalized / 2f;
-            normal.Normalize();
-         }
-      }
-
-     Normal[0] = normal;
-     _reflectDirection = Vector3.Reflect(_velocity.normalized, normal.normalized);
-     var angleRandom = UnityEngine.Random.Range(0,5);
-     _reflectDirection = Quaternion.Euler(0,0,angleRandom) * _reflectDirection;
-     _anglelNormalReflect = Vector3.Angle(_reflectDirection.normalized, collision.contacts[0].normal.normalized );
-     _velocity = _reflectDirection;
-    if( _parentRemoveBricks && collision.collider.transform.parent == _parentRemoveBricks  ) 
-    {
-         Destroy(collision.collider.transform.gameObject);
-         _ballTime.FixedTime( Time.time );
-    }
-
+       _reflectDirection = Vector3.Reflect(_velocity, normal);
+       //_velocity = Vector3.Reflect(_velocity, normal);
+       var angleRandom = UnityEngine.Random.Range(0,5);
+       _velocity = Quaternion.Euler(0,0,angleRandom) * _reflectDirection;
+      _anglelNormalReflect = Vector3.Angle(_velocity, collision.contacts[0].normal );
+    
+    _ballTime.FixedTime( Time.time );
+     
      if( _destroyerBorder && collision.collider.transform == _destroyerBorder )
      {
-        OnDestroyBall?.Invoke();
+        //OnDestroyBall?.Invoke();
      }
      OnCollisionBall?.Invoke( _velocity );
    }
   }
+
 
   private void OnCollisionStay2D( Collision2D collision )
   {
@@ -81,24 +71,52 @@ public class BallCollision : MonoBehaviour
     }
   }
 
+
+
   public void SetVelocity( Vector2 velocity )
   {
     _velocity = velocity;
   }
+
 #if UNITY_EDITOR
  
-  private void OnCollisionExit2D( Collision2D collision )
-  {
-    Normal[0] = Vector2.zero;
-    Normal[1] = Vector2.zero;
-  }
+//  private void OnCollisionExit2D( Collision2D collision )
+//  {
+//    Normal[0] = Vector2.zero;
+//    Normal[1] = Vector2.zero;
+// }
+
 
   private void Update()
   {
-    Debug.DrawRay( transform.position, 0.05f * Normal[0], Color.green);
-    Debug.DrawRay( transform.position, 0.05f * Normal[1], Color.blue);
-    Debug.DrawRay( transform.position, 0.05f * _velocity, Color.red);
+    //Debug.DrawRay( transform.position, 0.05f * Normal[0], Color.green);
+    //Debug.DrawRay( transform.position, 0.05f * Normal[1], Color.blue);
+    //Debug.DrawRay( transform.position, 0.05f * _velocity, Color.red);
+        
+        if( Input.GetKeyDown(KeyCode.Space))
+       {
+         int numTests = 500000;
+         using(new CustomTimer("Controlled Test", numTests))
+         {
+             for( int i = 0; i < numTests ; ++i)
+             {
+
+                     //_reflectDirection = Quaternion.Euler(0,0,5) * _reflectDirection;
+
+              //float angle = UnityEngine.Random.Range(3,5);
+                //Vector3.Reflect(_velocity.normalized, Normal[0].normalized);
+                //OnCollisionBall?.Invoke( _velocity );
+                // _rigidbody.velocity = _rigidbody.velocity.normalized * 0.5f * Time.fixedDeltaTime ;
+            //  TestCollinearity();
+
+             }
+         }
+       }
+
   }
 #endif
+
+
+
   
 }

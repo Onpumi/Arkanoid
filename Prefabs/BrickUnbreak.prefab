@@ -13,12 +13,12 @@ GameObject:
   - component: {fileID: 4010409456613454928}
   - component: {fileID: 7995770822687649444}
   - component: {fileID: 6644920304582996209}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: BrickUnbreak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4
   m_IsActive: 1
 --- !u!4 &5780349029372750858
 Transform:

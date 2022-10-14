@@ -24,7 +24,8 @@ public class RayBall : MonoBehaviour
     private float _radiusBall;
     private float SizeBall => _scaleBall * _radiusBall;
     private Vector3 _direction;
-    public event Action<Vector3> OnStartDirection;
+    public event Action OnStartDirection;
+    public Vector3 DirectionRay => _direction;
 
     private void Awake()
     {
@@ -32,8 +33,9 @@ public class RayBall : MonoBehaviour
         _balls = new List<Transform>();
         _hitBalls = new List<Transform>();
         _hitNormals = new List<Transform[]>();
-        var collider = _ball.GetComponent<CircleCollider2D>();
-        _radiusBall = collider.radius;
+//        var collider = _ball.GetComponent<CircleCollider2D>();
+//        _radiusBall = collider.radius;
+        _radiusBall = 0.02f;
 
          if( _ball )
          {
@@ -164,7 +166,8 @@ public class RayBall : MonoBehaviour
            ClearRay();
            IsDraw = false;
            _direction = _target - _ball.StartPosition;
-           OnStartDirection?.Invoke(_direction);
+           //OnStartDirection?.Invoke(_direction);
+           OnStartDirection?.Invoke();
            enabled = false;
         }
     }

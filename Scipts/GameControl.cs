@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Diagnostics;
 
 public class GameControl : MonoBehaviour
 {
@@ -25,6 +26,10 @@ public class GameControl : MonoBehaviour
       StartPositionBoard = _board.transform.position;
       _rayball =_board.GetComponent<RayBall>();
       _stateGame = _statusesGame.RunningGame;
+
+      Application.targetFrameRate = 30;
+
+      //Debug.Log(Application.targetFrameRate);
    }
 
    private void OnEnable()
@@ -128,6 +133,9 @@ public class GameControl : MonoBehaviour
       }
 
    }
+
+
+
 
    private void Update()
    {

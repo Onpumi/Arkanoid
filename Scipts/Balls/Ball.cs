@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Diagnostics;
 
 public class Ball : MonoBehaviour, IPoolable<Ball>
 {
@@ -11,6 +12,7 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
   [SerializeField] private Board _board;
   [SerializeField] private Vector3 _startPosition;
   [SerializeField] private BallCollision _ballCollision;
+  [SerializeField] private SpawnerBall _spawnerBall;
   private Vector2 _velocity;
   private Vector2 _prevDirection;
   private Vector3 _prevPosition;
@@ -22,6 +24,10 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
 
   public float Magnitude;
   public Vector2 Velocity;
+
+  public float time = 0;
+  public  float prevTime = 0;
+  public int count = 0;
 
    private void Awake()
   {
@@ -74,6 +80,10 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     _rayBall.OnStartDirection += StartMove; 
     _factoryBalls.OnReproductionBall += StartMove; 
     _board.OnReproductionOne += ActivateBonus;
+      if( _spawnerBall )
+     {
+      _spawnerBall.OnDoSpawn += ActivateBonus;
+     }
     _ballCollision.OnDestroyBall += DestroyThisBall;
     _ballCollision.OnCollisionBall += UpdateVelocity;
   }
@@ -83,16 +93,26 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     _rayBall.OnStartDirection -= StartMove; 
     _factoryBalls.OnReproductionBall -= StartMove; 
     _board.OnReproductionOne -= ActivateBonus;
+    if( _spawnerBall )
+    {
+      _spawnerBall.OnDoSpawn -= ActivateBonus;
+    }
     _ballCollision.OnDestroyBall -= DestroyThisBall;
     _ballCollision.OnCollisionBall -= UpdateVelocity;
   }
-  private void StartMove( Vector3 startDirection )
+  private void StartMove( )
   {
+     var startDirection = Vector3.up;
+     if( _rayBall.enabled == true )
+     {
+       startDirection = _rayBall.DirectionRay;
+     }
      if( _velocity == Vector2.zero || IsMove == false )
      {
         _velocity = startDirection * _speed * Time.fixedDeltaTime;
         _ballCollision.SetVelocity( _velocity );
         RotateDirection( StartAngle );
+        _rigidbody.velocity = _velocity.normalized * _speed * Time.fixedDeltaTime ;
      }
      IsMove = true;
   }
@@ -104,7 +124,10 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
 
   public void ActivateBonus()
   {
+      if( IsMove )
+    {
      _factoryBalls.SpawnBall( this, 2);
+    }
   }
 
   private void DestroyThisBall()
@@ -114,7 +137,10 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
 
   private void UpdateVelocity( Vector2 velocity )
   {
-    _velocity = velocity;
+      if( IsMove )
+    {
+      _rigidbody.velocity = velocity.normalized * _speed * Time.fixedDeltaTime ;
+    }
   }
 
   public void StopBall()
@@ -123,6 +149,37 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
     IsMove = false;
   }
 
+  public void SpawnBall( int countSpawn )
+  {
+    _factoryBalls.SpawnBall( this, countSpawn );
+  }
+
+
+  private void SetVelocity()
+  {
+      //_rigidbody.velocity = _velocity.normalized * _speed * Time.fixedDeltaTime ;    
+    _rigidbody.velocity = Vector2.zero;
+      //_velocity.Normalize();
+     //var a = _rigidbody.velocity;
+      //_rigidbody.velocity = Vector2.zero;
+      //Instantiate( transform, transform.position, Quaternion.identity);
+  }
+
+  private void TestFunction()
+  {
+      if( time-prevTime >= 1)
+      {
+       UnityEngine.Debug.Log( count++ );
+        prevTime = time;
+      }
+
+      time = Time.time;
+      //UnityEngine.Debug.Log(time);
+  }
+
+
+
+/*
   private void FixedUpdate()
   {   
     if( IsMove )
@@ -133,6 +190,31 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
 
     Magnitude = _rigidbody.velocity.magnitude;
     Velocity =  _rigidbody.velocity;
+
+//    TestFunction();
   }
 
+  */
+/*
+  #if UNITY_EDITOR
+  private void Update()
+  {
+
+        if( Input.GetKeyDown(KeyCode.Space))
+       {
+         int numTests = 250000;
+         using(new CustomTimer("Controlled Test", numTests))
+         {
+             for( int i = 0; i < numTests ; ++i)
+             {
+
+               SetVelocity();
+
+             }
+         }
+       }
+
+  }
+  #endif
+*/
 }

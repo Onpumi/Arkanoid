@@ -21,22 +21,24 @@ public class Bricks : MonoBehaviour
     {
 
         _countBricks = transform.childCount;
-        _bricks = new Brick[_countBricks];
         _bonuses = new List<BonusBall>();
         Color cls = new Color( 0f,1f,0.5f, 1f);
-     
+       if( _countBricks > 0 )
+       {
+        _bricks = new Brick[_countBricks];
         for( int i = 0 ; i < _countBricks ; i++ )
         {
             _bricks[i] = transform.GetChild(i).GetComponent<Brick>();
             _bricks[i].transform.GetComponent<SpriteRenderer>().color = cls;
         }
+       }
 
         InitBonuses();
     }
 
     private void Start()
     {
-        Debug.Log(_testSO._bonusBalls.Length);
+      //  Debug.Log(_testSO._bonusBalls.Length);
 
     }
 
@@ -51,8 +53,11 @@ public class Bricks : MonoBehaviour
     }
 
 
+
     private void InitBonuses()
     {
+       if( _bricks != null )
+      {
         foreach( var bonus in _bonusPrefabs )
         {
            for( int i = 0 ; i < bonus.Count ; i++ )
@@ -61,6 +66,7 @@ public class Bricks : MonoBehaviour
               GiveBonus( bonus, index );
            }
         }
+      }
     }
 
     private void UpdateBonuses()
@@ -79,11 +85,10 @@ public class Bricks : MonoBehaviour
         _countBricks--;
         if( _countBricks <= 0 )
         {
-            if( _winView != null )
-            {
-             OnDestroyAllBricks?.Invoke(_winView);
-            }
+            //  OnDestroyAllBricks?.Invoke(_winView);
         }
+
+       // Debug.Log( _countBricks );
     }
 
     private void GiveBonus( BonusBall bonus, int indexBrick )

@@ -19,7 +19,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &5593196489066801008
 Transform:
@@ -157,6 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _parentRemoveBricks: {fileID: 0}
   _destroyerBorder: {fileID: 0}
+  _soundPlayer: {fileID: 0}
   Normal:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}

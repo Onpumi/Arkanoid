@@ -12,6 +12,15 @@ public class Brick : MonoBehaviour
       _bricks = transform.parent.GetComponent<Bricks>();
    }
 
+   private void OnCollisionEnter2D( Collision2D collision )
+   {
+
+      if( collision.collider.TryGetComponent(out Ball ball) )
+      {
+         this.transform.gameObject.SetActive(false);
+      }
+   }
+
      public void InitBonus( BonusBall prefabBonus )
    {
       _bonusBall = Instantiate( prefabBonus, transform.position, Quaternion.identity, transform.parent );
@@ -21,9 +30,15 @@ public class Brick : MonoBehaviour
 
    public BonusBall GetBonus() => _bonusBall;
 
-   private void OnDestroy()
+   private void OnDisable()
    {
-         if( _bricks ) 
+      OpenBrick();
+   }
+
+
+   public void OpenBrick()
+   {
+          if( _bricks ) 
          {
            _bricks.UpdateBricks();
          }

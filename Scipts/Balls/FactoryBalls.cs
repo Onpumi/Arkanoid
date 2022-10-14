@@ -12,11 +12,12 @@ public class FactoryBalls : MonoBehaviour
     Pool<Ball> pool;
     IPoolFactory<Ball> factory;
     [SerializeField] private Ball _prefabBall;
-    private Vector3 _startDirection;
+    //private Vector3 _startDirection;
 
     public event Action OnLossAllBalls;
-    public event Action<Vector3> OnReproductionBall;
+    public event Action OnReproductionBall;
     private int countBalls = 1;
+    public int CountBalls => countBalls;
 
     private void Awake()
     {
@@ -25,7 +26,7 @@ public class FactoryBalls : MonoBehaviour
         pool = new Pool<Ball>(factory,5000);
 
         _balls = new HashSet<Ball>();
-        _startDirection = Vector3.up;
+        //_startDirection = Vector3.up;
      }
 
      public void SpawnBall( Ball ballOrigin, int countSpawn, Transform startPoint = null, float[] anglesSpawn = null )
@@ -54,12 +55,12 @@ public class FactoryBalls : MonoBehaviour
           }
           else
           {
-             throw new Exception("");
+             throw new Exception("Exception");
           }
           ball.InitVelocity( angleSpawn );
           countBalls++;
         }
-        OnReproductionBall?.Invoke(_startDirection);
+        OnReproductionBall?.Invoke();
      }
 
 
