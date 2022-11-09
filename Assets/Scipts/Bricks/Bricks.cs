@@ -29,7 +29,7 @@ public class Bricks : MonoBehaviour
         for( int i = 0 ; i < _countBricks ; i++ )
         {
             _bricks[i] = transform.GetChild(i).GetComponent<Brick>();
-            _bricks[i].transform.GetComponent<SpriteRenderer>().color = cls;
+//            _bricks[i].transform.GetComponent<SpriteRenderer>().color = cls;
         }
        }
 

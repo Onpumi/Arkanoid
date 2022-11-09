@@ -76,15 +76,18 @@ public class Board : MonoBehaviour
     private void Move()
     {
         var directionX = Input.GetAxis("Mouse X");
-        var positionX = _rigidbody.position.x + directionX;
+        //var positionX = _rigidbody.position.x + directionX;
           
-        var target = _rigidbody.position + new Vector2( directionX, 0) * Time.deltaTime * _speed;
+       // var target = _rigidbody.position + new Vector2( directionX, 0) * Time.deltaTime * _speed;
+        var target = transform.position + new Vector3( directionX, 0) * Time.deltaTime * _speed;
         if( 
             target.x < _border.MaxHorizontalPosition - transform.localScale.x / 2f - _border.FrameWidth / 2f && 
             target.x > _border.MinHorizontalPosition + transform.localScale.x / 2f + _border.FrameWidth / 2f 
           )
        {
-         _rigidbody.MovePosition( target );
+        // _rigidbody.MovePosition( target );
+       // transform.Translate( target );
+       transform.position = target;
          if( directionX != 0 )
          {
            OnMove?.Invoke();

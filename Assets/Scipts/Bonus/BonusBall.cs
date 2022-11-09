@@ -25,6 +25,7 @@ public class BonusBall : MonoBehaviour
     {
        _typesBonus = new TypesBonus();
        _typesBonus.Init();
+       transform.localScale = new Vector3(10,10,10);
     }
 
     private void OnCollisionEnter2D( Collision2D collision )

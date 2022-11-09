@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Threading.Tasks;
 using System.Linq;
+using Unity.Burst;
 //using UnityEngine.Pool;
+
+[BurstCompile]
 
 public class FactoryBalls : MonoBehaviour
 {
@@ -14,13 +17,13 @@ public class FactoryBalls : MonoBehaviour
     [SerializeField] private BallMover _ballMover;
     [SerializeField] private BallContainer _ballContainer;
     [SerializeField] private Board _board;
-    private const int _maxCountBalls = 1500;
+    private const int _maxCountBalls = 1000;
     private List<Ball> _activeBalls;
     public event Action OnLossAllBalls;
     public event Action OnUpdateCountShowBall;
+    public event Action OnMoveBall;
     private int _countBalls = 1;
     public int CountBalls => _countBalls;
-
     private IEnumerator _coroutineSpawn;
 
     private void Awake()
@@ -42,19 +45,6 @@ public class FactoryBalls : MonoBehaviour
     }
 
 
-     private async void SpawnAsyncBalls( Ball ball)
-     {
-
-         await Task.Run( () =>
-         {
-           if( _countBalls >= _maxCountBalls - 1 ) 
-           {
-            return;
-           }
-         }
-         );
-
-     }
 
      public void SpawnAllBalls()
      {
@@ -70,7 +60,7 @@ public class FactoryBalls : MonoBehaviour
         var countMaxSpawn = 5;
         var countActiveBalls = _activeBalls.Count;
         var countSpawn = 0;
-        var spawnNewBalls = new List<Ball>();
+        var spawnNewBalls = new HashSet<Ball>();
 
          foreach( Ball ball in _activeBalls )
         {
@@ -104,9 +94,6 @@ public class FactoryBalls : MonoBehaviour
         OnUpdateCountShowBall?.Invoke();
      }
 
-
-
-
     
      public Ball SpawnBall()
      {
@@ -123,5 +110,11 @@ public class FactoryBalls : MonoBehaviour
             OnLossAllBalls?.Invoke();
         }
      }
+/*
+     private void FixedUpdate()
+     {
+        OnMoveBall?.Invoke();
+     }
+*/
 
 }

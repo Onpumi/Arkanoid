@@ -8,7 +8,7 @@ public class CustomTimer : IDisposable
 {
 
     private string m_timerName;
-    private int m_numTests;
+    private float m_numTests;
     private Stopwatch m_watch;
 
     public CustomTimer( string timerName, int numTests )
@@ -27,6 +27,8 @@ public class CustomTimer : IDisposable
         m_watch.Stop();
         float ms = m_watch.ElapsedMilliseconds;
         UnityEngine.Debug.Log(string.Format("{0} finished: {1:0.00}ms total, {2:0.000000}ms per test for {3} tests", m_timerName, ms, ms/ m_numTests, m_numTests));
+        float m_countFrame = ms / (Time.fixedDeltaTime * 1000f);
+        UnityEngine.Debug.Log(string.Format($"Count frames: {m_countFrame}"));
     }
 
 }
