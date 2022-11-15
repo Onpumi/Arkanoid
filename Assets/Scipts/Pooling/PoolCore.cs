@@ -24,6 +24,14 @@ using System.Linq;
                 _availableObjects.Push(poolable);
             }
         }
+        public PoolCore(List<T> factories)
+        {
+               foreach( T factory in factories)
+              {
+                //_objectsFactory = factory;
+              }
+        }
+
 
         public T Get()
         {

@@ -5,15 +5,18 @@ using UnityEngine;
 public class BallTime 
 {
     private float _prevTime;
+    private float _deltaTime;
 
     public BallTime()
     {
         _prevTime = Time.time;
+        _deltaTime = Time.fixedDeltaTime * 2;
+        
     }
-    public void FixedTime( float currentTime )
+    public void FixedTime()
     {
-        _prevTime = currentTime;
+        _prevTime = Time.time;
     }
-    public bool isNeedTime() => ((_prevTime != 0 && Time.time-_prevTime >= 0.1) || _prevTime == 0 );
+    public bool isNeedTime() => ((_prevTime != 0 && Time.time-_prevTime >= _deltaTime) || _prevTime == 0 );
 
 }

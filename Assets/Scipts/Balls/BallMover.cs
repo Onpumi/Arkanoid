@@ -22,7 +22,10 @@ public class BallMover : MonoBehaviour
    private float _angleNormalReflect;
    private Rigidbody2D _rigidbody;
    private Vector2 _reflectDirection;
+   private BallTime _ballTime;
    Stopwatch st;
+
+   private Quaternion[] _anglesRotateBall;
 
 
    private void OnEnable()
@@ -40,9 +43,14 @@ public class BallMover : MonoBehaviour
    {
       _direction = Vector3.up;
       _rigidBody = GetComponent<Rigidbody2D>();
-      _speed = Time.fixedDeltaTime * 2f * 60f;
+      //_speed = Time.fixedDeltaTime * 2f * 70f * 2f;
+      _speed = 0.02f * 2f * 70f;
       _rigidbody = GetComponent<Rigidbody2D>();
       st = new Stopwatch();
+      _ballTime = new BallTime();
+      _anglesRotateBall = new Quaternion[3];
+      _anglesRotateBall[0] = Quaternion.Euler(0,0,30);
+      _anglesRotateBall[1]= Quaternion.Euler(0,0, 15);
    }
 
 
@@ -65,6 +73,7 @@ public class BallMover : MonoBehaviour
   
   private void OnCollisionEnter2D( Collision2D collision )
    {
+      // if( _ballTime.isNeedTime() )
      {
        if( _soundPlayer.isCanPlay )
        {
@@ -78,28 +87,44 @@ public class BallMover : MonoBehaviour
 
       if( collision.collider.TryGetComponent(out Brick brick) )
       {
-        brick.Despawn();
+        if( _ballTime.isNeedTime() )
+        {
+           brick.Despawn();
+           _ballTime.FixedTime();
+        }
       }
     }
+      _rigidbody.velocity = _direction.normalized * _speed;
+      // _ballTime.FixedTime( Time.time );
+    //UnityEngine.Debug.Log(_normal);
    }
 
 
   private void OnCollisionStay2D( Collision2D collision )
   {
+  //   if( _ballTime.isNeedTime() )
+  //  {
       float angleRandom = UnityEngine.Random.Range(5,10);
       _direction = Quaternion.Euler(0,0,angleRandom) * _direction;
 
       if( _angleNormalReflect > 90 )
       {
-        _direction = Quaternion.Euler(0,0,_angleNormalReflect) * _direction;
+        //_direction = Quaternion.Euler(0,0,_angleNormalReflect) * _direction;
+        _direction = Quaternion.Euler(0,0,_angleNormalReflect-60) * _direction;
       }
       _angleNormalReflect = Vector2.Angle(_direction.normalized, _normal.normalized );
       //if( _angleNormalReflect == 0 )
-      if( _angleNormalReflect >= 0 && _angleNormalReflect <= 3 )
+      //if( _angleNormalReflect >= 0 && _angleNormalReflect <= 5 )
+      if( _angleNormalReflect >= 0 && _angleNormalReflect <= 30 )
       {
-          _direction = Quaternion.Euler(0,0, 15) * _direction;
+          //_direction = Quaternion.Euler(0,0, 15) * _direction;
+          _direction = Quaternion.Euler(0,0, 30-_angleNormalReflect) * _direction;
       }
       _rigidbody.velocity = _direction.normalized * _speed;
+  //   }
+   //   _rigidbody.velocity = _direction.normalized * _speed;
+   
+
   }
   
     public void StartMove( Vector2 direction )
@@ -145,11 +170,29 @@ public class BallMover : MonoBehaviour
       {
          //transform.Translate(_direction);
          transform.position += (Vector3)_direction;
+         //collision.collider.TryGetComponent(out Brick brick)
          //UnityEngine.Debug.Log(_direction.magnitude);
       }
    }
 
-/*   
+
+   public void Func()
+   {
+       float angleRandom = UnityEngine.Random.Range(5,10);
+      _direction = Quaternion.Euler(0,0,angleRandom) * _direction;
+
+      if( _angleNormalReflect > 90 )
+      {
+        _direction = _anglesRotateBall[0] * _direction;
+        //_direction = Quaternion.Euler(0,0,_angleNormalReflect-60) * _direction;
+      }
+      _angleNormalReflect = Vector2.Angle(_direction.normalized, _normal.normalized );
+          _direction = _anglesRotateBall[1] * _direction;
+          //_direction = Quaternion.Euler(0,0, 30-_angleNormalReflect) * _direction;
+      _rigidbody.velocity = _direction.normalized * _speed;
+   }
+
+  /* 
    private void FixedUpdate()
   {
 
@@ -160,15 +203,14 @@ public class BallMover : MonoBehaviour
          {
              for( int i = 0; i < numTests ; ++i)
              {
-              
-               _angleNormalReflect = Vector2.Angle(_direction, _normal );
+               // Func();            
              }
          }
        }
 
       if( IsMove == true )
       {
-        transform.Translate(_direction);
+   //     transform.Translate(_direction);
       }
 #if UNITY_EDITOR
      // UnityEngine.Debug.DrawRay( transform.position, _direction.normalized, Color.red);
@@ -176,8 +218,8 @@ public class BallMover : MonoBehaviour
      // UnityEngine.Debug.Log(_normal);
 #endif
   }
-
-  */ 
+*/
+   
 
   
 }

@@ -34,7 +34,7 @@ public class Brick : MonoBehaviour
      public void InitBonus( BonusBall prefabBonus )
    {
       _bonusBall = Instantiate( prefabBonus, transform.position, Quaternion.identity, transform.parent );
-      _bonusBall.transform.localScale = transform.localScale;
+      //_bonusBall.transform.localScale = transform.localScale * 0.3f;
       _bonusBall.transform.gameObject.SetActive(false);
    }
 

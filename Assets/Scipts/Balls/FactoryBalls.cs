@@ -15,9 +15,8 @@ public class FactoryBalls : MonoBehaviour
     private IPoolFactory<Ball> _factory;
     [SerializeField] private Ball _ball;
     [SerializeField] private BallMover _ballMover;
-    [SerializeField] private BallContainer _ballContainer;
     [SerializeField] private Board _board;
-    private const int _maxCountBalls = 1000;
+    private const int _maxCountBalls = 700;
     private List<Ball> _activeBalls;
     public event Action OnLossAllBalls;
     public event Action OnUpdateCountShowBall;
@@ -28,10 +27,22 @@ public class FactoryBalls : MonoBehaviour
 
     private void Awake()
     {
-        _factory = new PrefabFactory<Ball>(_ball, transform, "ball");
-        _pool = new Pool<Ball>(_factory,5000);
-        _activeBalls = new List<Ball>();
-        _activeBalls.Add(_ball);
+      SpawnBallsToPool();
+    }
+
+
+    public void SpawnBallsToPool()
+    {
+       if( _factory == null )
+       {
+         _factory = new PrefabFactory<Ball>(_ball, transform, "ball");
+       }
+       if( _pool == null )
+       {
+         _pool = new Pool<Ball>(_factory,5000);
+         _activeBalls = new List<Ball>();
+         _activeBalls.Add(_ball);
+       }
     }
 
     private void OnEnable()

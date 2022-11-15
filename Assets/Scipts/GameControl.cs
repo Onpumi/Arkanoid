@@ -13,7 +13,7 @@ public class GameControl : MonoBehaviour
    [SerializeField] Bricks _bricks;
    [SerializeField] FactoryBalls _factoryBalls;
    [SerializeField] StatusesGame _statusesGame;
-   private IStateGame _stateGame;
+   //private IStateGame _stateGame;
    private List<ItemMenu> itemsMenu = new List<ItemMenu>();
    private RayBall _rayball;
    public Vector3 StartPositionBoard { get; private set; }
@@ -25,7 +25,7 @@ public class GameControl : MonoBehaviour
       StartPositionBall = _ballsParent.transform.GetChild(0).transform.position;
       StartPositionBoard = _board.transform.position;
       _rayball =_board.GetComponent<RayBall>();
-      _stateGame = _statusesGame.RunningGame;
+  //    _stateGame = _statusesGame.RunningGame;
 
 //      Application.targetFrameRate = 30;
 
@@ -77,11 +77,11 @@ public class GameControl : MonoBehaviour
    {
       if( isRun )
       {
-        _stateGame = _statusesGame.RunningGame;
+        //_stateGame = _statusesGame.RunningGame;
       }
       else
       {
-        _stateGame = _statusesGame.FrozenGame;
+        //_stateGame = _statusesGame.FrozenGame;
       }
    }
 

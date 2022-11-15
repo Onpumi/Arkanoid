@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum TypeBonus
@@ -10,6 +8,7 @@ public enum TypeBonus
     Star,
     None
 }
+
 public class BonusBall : MonoBehaviour
 {
     [SerializeField]  private TypeBonus _type;
@@ -18,38 +17,31 @@ public class BonusBall : MonoBehaviour
     public int Count => _count;
     private Vector3 _directionMove = -Vector3.up;
     public bool IsOpen {get; private set;}
-    private TypesBonus _typesBonus;
     public TypeBonus Type=>_type;
 
     private void Awake()
     {
-       _typesBonus = new TypesBonus();
-       _typesBonus.Init();
-       transform.localScale = new Vector3(10,10,10);
+       transform.localScale = new Vector3(1,1,1);
     }
 
     private void OnCollisionEnter2D( Collision2D collision )
     {
         if( collision.collider.TryGetComponent(out BorderRemover remover) )
        {
-         //Destroy(this.transform.gameObject);
          transform.gameObject.SetActive(false);
        }
     }
 
-     public void ActivateBonus( Action action )  
-     {
-         action?.Invoke();
-     }
+    public void SetCount( Level level )
+    {
+        _count = level.GetCountBonus( this );
+    }
 
-    // public void ActivateBonus( FactoryBalls factoryBalls )
-     //{
-        //factoryBalls.CloningBalls();
-     //}
 
     public void OpenBonus()
     {
        IsOpen = true;
+       Debug.Log(_count);
     }
 
     private void Move()
