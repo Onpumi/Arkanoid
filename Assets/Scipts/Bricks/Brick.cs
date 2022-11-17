@@ -7,14 +7,18 @@ public class Brick : MonoBehaviour
    public bool IsNull { get => (_bonusBall == null) ? (true) : (false); }
    public BonusBall BonusBall => _bonusBall;
 
+   int count = 0;
+
    private void Awake()
    {
-      _bricks = transform.parent.GetComponent<Bricks>();
+      _bricks = transform.parent.parent.parent.parent.GetComponent<Bricks>();
    }
 
 
    private void OnCollisionEnter2D( Collision2D collision )
    {
+
+      //   if( collision.contactCount > 1 ) { Debug.Log(count++); }
 
       //if( collision.collider.TryGetComponent(out BallMover ballMover) )
       //{
@@ -34,7 +38,6 @@ public class Brick : MonoBehaviour
      public void InitBonus( BonusBall prefabBonus )
    {
       _bonusBall = Instantiate( prefabBonus, transform.position, Quaternion.identity, transform.parent );
-      //_bonusBall.transform.localScale = transform.localScale * 0.3f;
       _bonusBall.transform.gameObject.SetActive(false);
    }
 

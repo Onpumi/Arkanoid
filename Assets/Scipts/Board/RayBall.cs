@@ -103,14 +103,12 @@ public class RayBall : MonoBehaviour
 
     private void DrawRay()
     {
-        //var startPosition = _ball.StartPosition;
         var startPosition = _ball.transform.position;
         var currentPosition = startPosition;
         _target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var targetDirection = _target-startPosition;
         IsDraw = true;
         ClearRay();
-        //Vector3 startRayPosition = _ball.StartPosition;
         Vector3 startRayPosition = _ball.transform.position;
         float startStep = 0;
         for( int i = 0; i < 2 ; i++ )

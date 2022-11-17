@@ -8,7 +8,6 @@ using System.Diagnostics;
 [BurstCompile]
 public class BallMover : MonoBehaviour
 {
- // static readonly ProfilerMarker marker = new ProfilerMarker("MySystem.Prepare");
    [SerializeField] private SoundsPlayer _soundPlayer;
    [SerializeField] private FactoryBalls _factoryBalls;
    private float _speed;
@@ -24,7 +23,6 @@ public class BallMover : MonoBehaviour
    private Vector2 _reflectDirection;
    private BallTime _ballTime;
    Stopwatch st;
-
    private Quaternion[] _anglesRotateBall;
 
 
@@ -73,7 +71,6 @@ public class BallMover : MonoBehaviour
   
   private void OnCollisionEnter2D( Collision2D collision )
    {
-      // if( _ballTime.isNeedTime() )
      {
        if( _soundPlayer.isCanPlay )
        {
@@ -95,8 +92,6 @@ public class BallMover : MonoBehaviour
       }
     }
       _rigidbody.velocity = _direction.normalized * _speed;
-      // _ballTime.FixedTime( Time.time );
-    //UnityEngine.Debug.Log(_normal);
    }
 
 

@@ -23,6 +23,12 @@ public class InputBoard : MonoBehaviour
              OnPress?.Invoke();
            }
         }
+
+     if( Input.GetAxis("Cancel") > 0 )
+ 	  {
+	    Application.Quit();
+	  }
+
     }
 
 }

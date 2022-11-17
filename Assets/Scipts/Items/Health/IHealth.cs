@@ -6,5 +6,4 @@ public interface IHealth
 {
    bool CanTakeDamage { get; }
    void TakeDamage();
-  
 }

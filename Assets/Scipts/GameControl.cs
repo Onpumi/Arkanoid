@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Diagnostics;
 
+
 public class GameControl : MonoBehaviour
 {
-   [SerializeField] Transform _ballsParent;
-   [SerializeField] SceneLoader _sceneLoader;
-   [SerializeField] MenuEndView _lossView;
-   [SerializeField] MenuEndView _winView;
-   [SerializeField] Board _board;
-   [SerializeField] Bricks _bricks;
-   [SerializeField] FactoryBalls _factoryBalls;
-   [SerializeField] StatusesGame _statusesGame;
+   [SerializeField] private  Transform _ballsParent;
+   [SerializeField] private Ball _ball;
+   [SerializeField] private  MenuEndView _lossView;
+   [SerializeField] private  MenuEndView _winView;
+   [SerializeField] private  Board _board;
+   [SerializeField] private  Bricks _bricks;
+   [SerializeField] private  FactoryBalls _factoryBalls;
+   [SerializeField] private  PlayingScene _playingScene;
+   [SerializeField] private  StatusesGame _statusesGame;
    //private IStateGame _stateGame;
    private List<ItemMenu> itemsMenu = new List<ItemMenu>();
    private RayBall _rayball;
@@ -30,11 +32,12 @@ public class GameControl : MonoBehaviour
 //      Application.targetFrameRate = 30;
 
       //Debug.Log(Application.targetFrameRate);
+      //DontDestroyOnLoad(this);
    }
 
    private void OnEnable()
    {
-      _factoryBalls.OnLossAllBalls += ResetGame;
+      _factoryBalls.OnLossAllBalls += ResetStateGame;
       _board.OnLostAll += FrozeLevel;
       _bricks.OnDestroyAllBricks += FrozeLevel;
       SignTheView( _lossView );
@@ -43,7 +46,7 @@ public class GameControl : MonoBehaviour
 
    private void OnDisable()
    {
-      _factoryBalls.OnLossAllBalls -= ResetGame;
+      _factoryBalls.OnLossAllBalls -= ResetStateGame;
       _board.OnLostAll -= FrozeLevel;
       _bricks.OnDestroyAllBricks -= FrozeLevel;
       UnsubscribeViews();
@@ -73,21 +76,11 @@ public class GameControl : MonoBehaviour
       }
    }
 
-   public void SetStatusRun( bool isRun )
-   {
-      if( isRun )
-      {
-        //_stateGame = _statusesGame.RunningGame;
-      }
-      else
-      {
-        //_stateGame = _statusesGame.FrozenGame;
-      }
-   }
+   
 
    
 
-   private void ResetGame()
+   private void ResetStateGame()
    {
        _board.transform.position = StartPositionBoard;
        Ball ball = _factoryBalls.SpawnBall();
@@ -97,18 +90,18 @@ public class GameControl : MonoBehaviour
 
    private void RestartLevel()
    {
-      _sceneLoader.RestartLevel( );
+      //_sceneLoader.RestartLevel( );
    }
 
    private void FrozeLevel( MenuEndView view )
    {
-      _ballsParent?.gameObject.SetActive(false);
+//      _ballsParent?.gameObject.SetActive(false);
       view.transform.gameObject.SetActive(true);
       if( _rayball )
       {
        _rayball.enabled = false;
       }
-      SetStatusRun( false );
+      
    }
 
 
@@ -121,7 +114,7 @@ public class GameControl : MonoBehaviour
       }
       else if( change == SelectFromLoss.Menu)
       {
-         _sceneLoader.LoadScene(0);
+        // _sceneLoader.LoadScene(0);
       }
       else if( change == SelectFromLoss.Exit)
       {
@@ -129,7 +122,11 @@ public class GameControl : MonoBehaviour
       }
       else if( change == SelectFromLoss.Next)
       {
-         _sceneLoader.NextLevel( this );
+         _rayball.enabled = true;
+         _factoryBalls.ReturnPoolAllBalls();
+         _ball = _factoryBalls.SpawnBall();
+         _playingScene.NextLevel();
+
       }
 
    }

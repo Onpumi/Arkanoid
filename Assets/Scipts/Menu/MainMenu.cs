@@ -7,8 +7,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _levels;
     [SerializeField] private FactoryBalls _factoryBalls;
-    [SerializeField] private Transform _gameZone;
-    [SerializeField] private Transform _menuZone;
+    [SerializeField] private PlayingScene _playingScene;
 
 
     private void Awake()
@@ -30,11 +29,8 @@ public class MainMenu : MonoBehaviour
 
     private void OnPlayClicked( PlayMode mode )
     {
-
-        _menuZone.gameObject.SetActive(false);
-        _gameZone.gameObject.SetActive(true);
+        _playingScene.StartLevel();
     }    
-
 
 }
 

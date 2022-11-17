@@ -36,7 +36,7 @@ public class Level : MonoBehaviour, IPoolable<Level>
              return propertyBonus.countBonus;
           }
       }
-      return 0;
+      return bonusBall.Count;
   }
 
 }

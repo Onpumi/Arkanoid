@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 public class HealthView : MonoBehaviour, IHealthView
 {
+   [SerializeField] private Transform _parentHealth;
    [SerializeField] private Transform _prefabImage;
-   [SerializeField] private Transform _grid;
-   [SerializeField] private Transform _borderUP;
    private Transform  _parentImage;
    private List<Transform> _objectsImage;
    private float _stepDraw;
@@ -27,11 +26,16 @@ public class HealthView : MonoBehaviour, IHealthView
       {
             if( _objectsImage.Count == 0 )
           {
+             var beginPositionX = Screen.width - 5 * (_stepDraw + _stepDraw * 0.5f);
              for( int i = 0 ; i < count; i++)
              {
-                _objectsImage.Add( Instantiate( _prefabImage, _parentImage ) );
-                var screen = new Vector2 (Screen.width - Screen.width/4f + _stepDraw * i, Screen.height - _stepDraw);
-               _objectsImage[i].position = Camera.main.ScreenToWorldPoint(screen);
+                var hearth = Instantiate( _prefabImage, _parentImage );
+                //var screen = new Vector2 (beginPositionX + (_stepDraw + _stepDraw * 0.5f) * (float)i, Screen.height - _stepDraw * 1.5f);
+                var screen = new Vector2 (beginPositionX + _stepDraw  * (float)i, Screen.height - _stepDraw * 1.5f);
+               var position = Camera.main.ScreenToWorldPoint(screen);
+                hearth.position = new Vector3(position.x, position.y,0);
+                hearth.transform.localScale = new Vector3(1,1,1);
+                _objectsImage.Add( hearth );
              }
           }
           else

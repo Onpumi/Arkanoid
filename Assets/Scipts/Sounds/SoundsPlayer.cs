@@ -4,22 +4,28 @@ using UnityEngine;
 
 public class SoundsPlayer : MonoBehaviour
 {
-    [SerializeField] AudioClip _audioClip;
-    public static AudioSource _audio;
+    [SerializeField] AudioClip _audioBall;
+    [SerializeField] AudioClip _audioBonus;
+    private AudioSource _audio;
     private float _time;
-    public bool isCanPlay => Time.time -_time > 0.03f;
+    public bool isCanPlay => Time.time -_time > 0.07f;
+    
 
   
-    private void Start()
+      private void Start()
     {
         _audio = GetComponent<AudioSource>();
-        _audio.clip = _audioClip;
     }
 
-       public void PlayHitBall() 
+     public void PlayHitBall() 
     {
-       _audio.PlayOneShot(_audioClip);
+       _audio.PlayOneShot(_audioBall);
        _time = Time.time;
+    }
+
+     public void PlayGetBonus()
+    {
+      _audio.PlayOneShot(_audioBonus, 0.2f);
     }
 
 }

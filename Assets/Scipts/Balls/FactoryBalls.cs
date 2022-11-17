@@ -16,7 +16,7 @@ public class FactoryBalls : MonoBehaviour
     [SerializeField] private Ball _ball;
     [SerializeField] private BallMover _ballMover;
     [SerializeField] private Board _board;
-    private const int _maxCountBalls = 700;
+    private const int _maxCountBalls = 500;
     private List<Ball> _activeBalls;
     public event Action OnLossAllBalls;
     public event Action OnUpdateCountShowBall;
@@ -120,6 +120,14 @@ public class FactoryBalls : MonoBehaviour
         {
             OnLossAllBalls?.Invoke();
         }
+     }
+
+     public void ReturnPoolAllBalls()
+     {
+         foreach( Ball activeBall in _activeBalls )
+         {
+           _pool.Return(activeBall);
+         }
      }
 /*
      private void FixedUpdate()

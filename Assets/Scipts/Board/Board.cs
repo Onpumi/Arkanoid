@@ -15,6 +15,7 @@ public class Board : MonoBehaviour
   [SerializeField] private FactoryBalls _factoryBalls;
   [SerializeField] private HealthView _healthView;
   [SerializeField] private MenuEndView _lossView;
+  [SerializeField] private SoundsPlayer _soundPlayer;
   private Rigidbody2D _rigidbody;
   public Health Health { get; private set; }
   public float Speed => _speed;
@@ -64,6 +65,7 @@ public class Board : MonoBehaviour
           if( bonusBall.Type == TypeBonus.ReproductionOne )
           {
              OnReproductionOne?.Invoke();
+             _soundPlayer.PlayGetBonus();
           } 
           else if( bonusBall.Type == TypeBonus.ReproductionTwo )
           {

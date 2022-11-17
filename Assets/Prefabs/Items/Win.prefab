@@ -248,7 +248,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8159272342277400972}
-  - component: {fileID: 8159272342277400973}
+  - component: {fileID: 8472013323124298009}
   m_Layer: 5
   m_Name: Win
   m_TagString: Untagged
@@ -281,7 +281,7 @@ RectTransform:
   m_AnchoredPosition: {x: -2.02, y: 79.12}
   m_SizeDelta: {x: 123.1, y: 124.42}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8159272342277400973
+--- !u!114 &8472013323124298009
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

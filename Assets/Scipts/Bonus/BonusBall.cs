@@ -15,13 +15,14 @@ public class BonusBall : MonoBehaviour
     [SerializeField]  private int _count;
     [SerializeField]  private float _speed;
     public int Count => _count;
-    private Vector3 _directionMove = -Vector3.up;
+    private Vector3 _directionMove;
     public bool IsOpen {get; private set;}
     public TypeBonus Type=>_type;
 
     private void Awake()
     {
        transform.localScale = new Vector3(1,1,1);
+       _directionMove = -Vector3.up * _speed * Time.fixedDeltaTime;
     }
 
     private void OnCollisionEnter2D( Collision2D collision )
@@ -41,12 +42,11 @@ public class BonusBall : MonoBehaviour
     public void OpenBonus()
     {
        IsOpen = true;
-       Debug.Log(_count);
     }
 
     private void Move()
     {
-       transform.position += _directionMove * _speed * Time.fixedDeltaTime;
+       transform.position += _directionMove;
     }
 
     private void FixedUpdate()

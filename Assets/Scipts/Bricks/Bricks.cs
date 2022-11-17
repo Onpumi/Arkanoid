@@ -13,34 +13,34 @@ public class Bricks : MonoBehaviour
     private Brick[] _bricks;
     private List<BonusBall> _bonuses;
     private int _countBricks;
+    private int _countBrakeBricks;
+    private List<Brick> _bricksBreak;
     public event Action<MenuEndView> OnDestroyAllBricks;
-    [SerializeField] private TestSO _testSO;
     
     private void Start()
     {
 
         Transform transformBricks = transform.GetChild(0).GetChild(0).GetChild(0);
 
-            
-        _countBricks = transformBricks.childCount;
         var count = transformBricks.childCount;
         _countBricks = 0;
 
 
-        List<Brick> bricksBreak = new List<Brick>();
+        _bricksBreak = new List<Brick>();
 
         foreach( Transform transformBrick in transformBricks )
         {
             if( transformBrick.TryGetComponent(out Brick brick))
             {
-                bricksBreak.Add( brick );
+                _bricksBreak.Add( brick );
                 _countBricks++;
             }
         }
 
+
         _bricks = new Brick[_countBricks];
         int index = 0;
-        foreach( Brick brick in bricksBreak )
+        foreach( Brick brick in _bricksBreak )
         {
             _bricks[index++] = brick;
         }
@@ -55,7 +55,7 @@ public class Bricks : MonoBehaviour
         for( int i = 0 ; i < _countBricks ; i++ )
         {
             //_bricks[i] = transformBricks.GetChild(i).GetComponent<Brick>();
-//            _bricks[i].transform.GetComponent<SpriteRenderer>().color = cls;
+            //_bricks[i].transform.GetComponent<SpriteRenderer>().color = cls;
         }
        }
 
@@ -111,22 +111,22 @@ public class Bricks : MonoBehaviour
               OnDestroyAllBricks?.Invoke(_winView);
         }
 
-       // Debug.Log( _countBricks );
+        //Debug.Log( _countBricks );
+
     }
 
     private void GiveBonus( BonusBall bonus, int indexBrick )
     {
-        if( _bricks == null || _bricks.Length == 0 ) { return; }
-        while( _bricks[indexBrick].IsNull != true && indexBrick < _bricks.Length )
+        if( _bricksBreak == null || _bricksBreak.Count == 0 ) { return; }
+        while( _bricksBreak[indexBrick].IsNull != true && indexBrick < _bricksBreak.Count )
         {
             indexBrick++;
         }
-        if( indexBrick < _bricks.Length )
+        if( indexBrick < _bricksBreak.Count )
         {
-           _bricks[indexBrick].InitBonus( bonus );
-           _bonuses.Add( _bricks[indexBrick].GetBonus() );
+           _bricksBreak[indexBrick].InitBonus( bonus );
+           _bonuses.Add( _bricksBreak[indexBrick].GetBonus() );
         }
     }
-
 
 }
