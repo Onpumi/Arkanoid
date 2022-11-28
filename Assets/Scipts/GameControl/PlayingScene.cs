@@ -3,10 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class PlayingScene : MonoBehaviour
 {
-   [SerializeField] LevelManager _levelManager;
+    [SerializeField] LevelManager _levelManager;
+    [SerializeField] private Ball   _ball;
     [SerializeField] private Transform _gameZone;
     [SerializeField] private Transform _menuZone;
-    [SerializeField] private Transform _itemsView;
+    [SerializeField] private Transform _parentPopupMenuViews;
     private PlayMode _playMode;
 
    private void Awake()
@@ -14,7 +15,6 @@ public class PlayingScene : MonoBehaviour
      transform.gameObject.SetActive(false);
      _playMode = PlayMode.Menu;
      UpdateScene(PlayMode.Menu);
-   //  DontDestroyOnLoad(this);
    }
 
 
@@ -33,20 +33,29 @@ public class PlayingScene : MonoBehaviour
       }
       else if( playMode == PlayMode.Play )
       {
-         _menuZone.gameObject.SetActive(false);
+        _menuZone.gameObject.SetActive(false);
         _gameZone.gameObject.SetActive(true);
       }
       else
       {
 
       }
+
    }
 
    public void NextLevel()
    {
-       //SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex );
-      _itemsView.gameObject.SetActive(false);
+     _parentPopupMenuViews.gameObject.SetActive(false);
+     _playMode = PlayMode.Play;
      _levelManager.NextLevel();
+      UpdateScene(PlayMode.Play);
+   }
+
+   public void RestartLevel()
+   {
+      _parentPopupMenuViews.gameObject.SetActive(false);
+      _playMode = PlayMode.Play;
+      _levelManager.RestartLevel();
       UpdateScene(PlayMode.Play);
    }
 }

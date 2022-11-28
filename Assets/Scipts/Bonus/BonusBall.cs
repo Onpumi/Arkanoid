@@ -28,14 +28,14 @@ public class BonusBall : MonoBehaviour
     private void OnCollisionEnter2D( Collision2D collision )
     {
         if( collision.collider.TryGetComponent(out BorderRemover remover) )
-       {
-         transform.gameObject.SetActive(false);
-       }
+        {
+          transform.gameObject.SetActive(false);
+        }
     }
 
     public void SetCount( Level level )
     {
-        _count = level.GetCountBonus( this );
+      _count = level.GetCountBonus( this );
     }
 
 

@@ -9,7 +9,7 @@ public class Brick : MonoBehaviour
 
    int count = 0;
 
-   private void Awake()
+   private void OnEnable()
    {
       _bricks = transform.parent.parent.parent.parent.GetComponent<Bricks>();
    }
@@ -35,7 +35,7 @@ public class Brick : MonoBehaviour
       transform.gameObject.SetActive(false);
    }
 
-     public void InitBonus( BonusBall prefabBonus )
+     public void SpawnBonus( BonusBall prefabBonus )
    {
       _bonusBall = Instantiate( prefabBonus, transform.position, Quaternion.identity, transform.parent );
       _bonusBall.transform.gameObject.SetActive(false);
@@ -46,21 +46,29 @@ public class Brick : MonoBehaviour
    private void OnDisable()
    {
       OpenBrick();
+      _bonusBall = null;
    }
 
 
    public void OpenBrick()
    {
           if( _bricks ) 
-         {
+          {
            _bricks.UpdateBricks();
-         }
+          }
 
-         if( _bonusBall != null )
-         {
+          if( _bonusBall != null )
+          {
             _bonusBall.transform.gameObject.SetActive(true);
             _bonusBall.OpenBonus();
-         }
+          }
    }
+
+
+  public void SetColor( Color color )
+  {
+    transform.GetComponent<SpriteRenderer>().color = color;
+  }
+
 
 }

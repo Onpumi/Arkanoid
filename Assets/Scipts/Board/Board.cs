@@ -130,6 +130,27 @@ public class Board : MonoBehaviour
          Move();
       }
     }
-  
+
+/*
+    #if UNITY_EDITOR
+Vector2 v;
+    private void FixedUpdate()
+    {
+           if( Input.GetButtonDown("Fire2"))
+       {
+          UnityEngine.Debug.Log("запуск теста");
+         int numTests = 500 * 20;
+         using(new CustomTimer("Controlled Test", numTests))
+         {
+             for( int i = 0; i < numTests ; ++i)
+             {
+
+             }
+         }
+         UnityEngine.Debug.Log("окончание теста");
+       }
+    }
+    #endif
+*/  
 }
 

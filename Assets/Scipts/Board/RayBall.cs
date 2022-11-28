@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 public class RayBall : MonoBehaviour
@@ -12,7 +13,8 @@ public class RayBall : MonoBehaviour
     [SerializeField] private int _countStep;
     [SerializeField] private LayerMask _maskaRaycast;
     [SerializeField] private Ball _ball;
-    [SerializeField] private BallMover _ballMover;
+    //[SerializeField] private BallMover _ballMover;
+    [SerializeField] private FactoryBalls _factoryBalls;
     private Vector3 _prevTarget;
     private Vector3 _target;
     public bool IsDraw { get; private set; }
@@ -25,7 +27,9 @@ public class RayBall : MonoBehaviour
     private float _radiusBall = 0.02f;
     private float SizeBall => _scaleBall * _radiusBall;
     private Vector3 _direction;
+    private bool _isReady = false;
     public Vector3 DirectionRay => _direction;
+    private Vector3 _startBallPosition = new Vector3(-1f,-2.5f);
 
     private void Awake()
     {
@@ -33,38 +37,50 @@ public class RayBall : MonoBehaviour
         _balls = new List<Transform>();
         _hitBalls = new List<Transform>();
         _hitNormals = new List<Transform[]>();
-        _radiusBall = 0.02f;
-
-         if( _ball )
-         {
+       // _startBallPosition = _ball.transform.position;
+      //  _radiusBall = 0.02f;
+      if( _ball )
+      {
            _scaleBall = _ball.transform.localScale.x;
-         }
-
+      }
     }
 
-    
+    private void OnEnable()
+    {
+      //_ball = _factoryBalls.SpawnBall();
+      _ball = _factoryBalls.GetFirstBall();
+      _ball.transform.position = _startBallPosition;
+      _ball.BallMover.StopMove();
+    }
+
+    private void OnDisable()
+    {
+     // if( _ball.BallMover.IsMove == false )
+       // _factoryBalls.DespawnBall( _ball );
+    }
+
     private void ClearBalls()
     {
            if( _balls.Count > 0  )
-         {
+           {
             foreach( var ball in _balls )
             {
                Destroy(ball.transform.gameObject);
             }
-           _balls.Clear();
-         }
+            _balls.Clear();
+           }
     }
 
     private void ClearHitBalls()
     {
          if( _hitBalls.Count > 0 )
-        {
+         {
             foreach( var hitball in _hitBalls)
             {
                 Destroy( hitball.transform.gameObject );
             }
             _hitBalls.Clear();
-        }
+         }
     }
 
     private void ClearHitNormals()
@@ -112,7 +128,7 @@ public class RayBall : MonoBehaviour
         Vector3 startRayPosition = _ball.transform.position;
         float startStep = 0;
         for( int i = 0; i < 2 ; i++ )
-     {
+        {
         
          var hit = Physics2D.CircleCast( startRayPosition + targetDirection.normalized * startStep, SizeBall, targetDirection, Mathf.Infinity, ~_maskaRaycast );
 
@@ -126,15 +142,15 @@ public class RayBall : MonoBehaviour
          }
          else
          {
-            //Debug.Log("NULL collider");
+            throw new Exception("NULL collider");
             break;
          }
 
-           var prevMagnitude = (hitPoint-currentPosition).magnitude;
+            var prevMagnitude = (hitPoint-currentPosition).magnitude;
             Vector3 directionRay = (hitPoint-currentPosition);
 
-          while( directionRay.magnitude > 0.1f )
-        {
+          for( int j = 0 ; j < 1000 && directionRay.magnitude > 0.1f ; j++ )
+         {
             directionRay = (hitPoint-currentPosition);
            _balls.Add( Instantiate(_prefabBall, currentPosition, Quaternion.identity) );
            currentPosition += (directionRay).normalized * _step;
@@ -142,30 +158,45 @@ public class RayBall : MonoBehaviour
            {
              break;
            }
-        }
+         }
 
         startRayPosition = hitPoint;
-        targetDirection = Vector3.Reflect(targetDirection.normalized * 0.05f,hit.normal.normalized);
+        targetDirection = Vector3.Reflect(targetDirection.normalized * 0.02f,hit.normal.normalized);
         startStep = _step + 1;
      }
         _prevTarget = _target;
     }
 
-    private void Update()
+
+  //  private int count1 = 0;
+    private void StartRay()
     {
-      
-        if( Input.GetMouseButton(0) )
+          if( Input.GetMouseButton(0) )
         {
             DrawRay();
+            _isReady = true;
+          //  Debug.Log("нажали" + count1++);
         }
 
         if( Input.GetMouseButtonUp(0))
         {
-           ClearRay();
-           IsDraw = false;
-           _direction = _target - _ball.transform.position;
-           _ballMover.StartMove( _direction );
-           enabled = false;
+          if( _isReady )
+          { 
+              ClearRay();
+              IsDraw = false;
+              _direction = _target - _startBallPosition;
+              _ball.BallMover.StartMove( _direction );
+              enabled = false;
+              _isReady = false;
+          }
         }
     }
+
+    private void Update()
+    {
+
+        StartRay();
+    
+    }
+
 }

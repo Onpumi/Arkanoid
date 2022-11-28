@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,23 +9,47 @@ public class Bricks : MonoBehaviour
     [SerializeField] Board _board;
     [SerializeField] MenuEndView _winView;
     [SerializeField] LevelManager _levelManager;
-    private Brick[] _bricks;
+    private List<Brick> _bricks;
     private List<BonusBall> _bonuses;
     private int _countBricks;
-    private int _countBrakeBricks;
     private List<Brick> _bricksBreak;
     public event Action<MenuEndView> OnDestroyAllBricks;
     
+
+    private void OnEnable()
+    {
+        LoadBricks();
+        InitBonuses();
+      _factoryBalls.OnLossAllBalls += UpdateBonuses;
+    }
+
     private void Start()
     {
+       //       LoadBricks();
+         //     InitBonuses();
+    }
 
-        Transform transformBricks = transform.GetChild(0).GetChild(0).GetChild(0);
+    public void Restart()
+    {
+        LoadBricks();
+        InitBonuses();
+    }
 
+    private void OnDisable()
+    {
+      _factoryBalls.OnLossAllBalls -= UpdateBonuses;
+      _bricksBreak.Clear();
+      _bricks.Clear();
+    }
+
+    private void LoadBricks()
+    {
+        Transform transformBricks;
+        transformBricks = transform.GetChild(transform.childCount-1).GetChild(0).GetChild(0);
         var count = transformBricks.childCount;
         _countBricks = 0;
-
-
-        _bricksBreak = new List<Brick>();
+        _bricksBreak ??= new List<Brick>();
+        _bricks ??= new List<Brick>();
 
         foreach( Transform transformBrick in transformBricks )
         {
@@ -37,59 +60,41 @@ public class Bricks : MonoBehaviour
             }
         }
 
-
-        _bricks = new Brick[_countBricks];
-        int index = 0;
         foreach( Brick brick in _bricksBreak )
         {
-            _bricks[index++] = brick;
+           _bricks.Add( brick );
         }
         
-
-
-        _bonuses = new List<BonusBall>();
-        Color cls = new Color( 0f,1f,0.5f, 1f);
-       if( _countBricks > 0 )
-       {
-     //   _bricks = new Brick[_countBricks];
-        for( int i = 0 ; i < _countBricks ; i++ )
-        {
-            //_bricks[i] = transformBricks.GetChild(i).GetComponent<Brick>();
-            //_bricks[i].transform.GetComponent<SpriteRenderer>().color = cls;
-        }
-       }
-
-        InitBonuses();
+        _bonuses ??= new List<BonusBall>();
+        _bonuses.Clear();
     }
 
-
-    private void OnEnable()
+    public void Show()
     {
-        _factoryBalls.OnLossAllBalls += UpdateBonuses;
+        Debug.Log($"bonus count {_bonuses.Count}");
     }
 
-    private void OnDisable()
+    private void SetColor( Transform transformBricks, Color color, int index )
     {
-        _factoryBalls.OnLossAllBalls -= UpdateBonuses;
+        _bricks[index] = transformBricks.GetChild(index).GetComponent<Brick>();
+        _bricks[index].SetColor( color );
     }
-
-
 
     private void InitBonuses()
     {
        var currentLevel = _levelManager.GetCurrentLevel();
-       if( _bricks != null )
-      {
+       if( _bricksBreak != null )
+       {
         foreach( var bonus in _bonusPrefabs )
         {
            for( int i = 0 ; i < bonus.Count ; i++ )
            {
               bonus.SetCount( currentLevel );
-              var index = UnityEngine.Random.Range(0,_bricks.Length);
-              GiveBonus( bonus, index );
+              var index = UnityEngine.Random.Range(0,_bricksBreak.Count-1);
+              PutBonusInBrick( bonus, index );
            }
         }
-      }
+       }
     }
 
     private void UpdateBonuses()
@@ -98,34 +103,45 @@ public class Bricks : MonoBehaviour
         {
             if( bonus != null && bonus.IsOpen )
             {
-                bonus.transform.gameObject.SetActive(false);
+              bonus.transform.gameObject.SetActive(false);
             }
         }
     }
+
+    public void ClearBonuses()
+    {
+        foreach( var bonus in _bonuses )
+        {
+            //  Destroy(bonus.transform.gameObject);
+            bonus.transform.gameObject.SetActive(false);
+        }
+    }
+
 
     public void UpdateBricks()
     {
         _countBricks--;
         if( _countBricks <= 0 )
         {
-              OnDestroyAllBricks?.Invoke(_winView);
+          OnDestroyAllBricks?.Invoke(_winView);
         }
-
-        //Debug.Log( _countBricks );
-
     }
 
-    private void GiveBonus( BonusBall bonus, int indexBrick )
+    private void PutBonusInBrick( BonusBall bonus, int indexBrick )
     {
+
         if( _bricksBreak == null || _bricksBreak.Count == 0 ) { return; }
-        while( _bricksBreak[indexBrick].IsNull != true && indexBrick < _bricksBreak.Count )
-        {
-            indexBrick++;
-        }
+       // Debug.Log( "!!!!!!!!!" + indexBrick + " " + _bricksBreak.Count );
+//        while( _bricksBreak[indexBrick].IsNull != true && indexBrick < _bricksBreak.Count )
+          while(  indexBrick < _bricksBreak.Count   )
+          {
+              if (_bricksBreak[indexBrick].IsNull != true) indexBrick++;
+              else break;
+          }
         if( indexBrick < _bricksBreak.Count )
         {
-           _bricksBreak[indexBrick].InitBonus( bonus );
-           _bonuses.Add( _bricksBreak[indexBrick].GetBonus() );
+            _bricksBreak[indexBrick].SpawnBonus( bonus );
+            _bonuses.Add( _bricksBreak[indexBrick].GetBonus() );
         }
     }
 

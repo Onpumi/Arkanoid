@@ -6,11 +6,12 @@ public class LevelManager : MonoBehaviour
 {
 
    [SerializeField] private List<Level> _levels;
+   [SerializeField] private RayBall _rayball;
    
    private Level _currentLevel;
    private int _currentIndex = 0;
 
-   private void Start()
+   private void Awake()
    {
       if( _levels != null && _levels.Count > 0 )
       {
@@ -23,14 +24,26 @@ public class LevelManager : MonoBehaviour
        return _currentLevel;
    }
 
+   public void LoadLevel()
+   {
+     _currentLevel = Instantiate( _levels[_currentIndex], transform );
+     _rayball.enabled = true;
+   }
+
    public void NextLevel()
    {
       Destroy(_currentLevel.transform.gameObject);
-      _currentIndex++;
+       _currentIndex++;
       if( _currentIndex < _levels.Count)
       {
-         _currentLevel = Instantiate( _levels[_currentIndex], transform );
+         LoadLevel();
       }
+   }
+
+   public void RestartLevel()
+   {
+      Destroy(_currentLevel.transform.gameObject);
+      LoadLevel();
    }
 
 }

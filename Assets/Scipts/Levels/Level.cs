@@ -9,14 +9,16 @@ public class Level : MonoBehaviour, IPoolable<Level>
    private const string _prefix = "Level";
    
    private readonly StringBuilder _nameBuilder = new StringBuilder();
+   private RayBall _rayball;
    public string FullName { get; private set; }
    public int Index => _index;
 
    
-    private void Awake()
-    {
+  private void Awake()
+  {
       FullName = _nameBuilder.Append(_prefix).Append(' ').Append(_index).ToString();
-    }
+  }
+
     public void SpawnFrom( IPool<Level> pool )
   {
      transform.gameObject.SetActive(true);
@@ -38,5 +40,7 @@ public class Level : MonoBehaviour, IPoolable<Level>
       }
       return bonusBall.Count;
   }
+  
+  //public int 
 
 }

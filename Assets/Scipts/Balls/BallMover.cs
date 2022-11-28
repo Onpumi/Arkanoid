@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Burst;
 using Unity.Profiling;
 using System.Diagnostics;
+using Debug = UnityEngine.Debug;
 
 [BurstCompile]
 public class BallMover : MonoBehaviour
@@ -129,6 +130,14 @@ public class BallMover : MonoBehaviour
       _rigidbody.velocity = _direction;
    }
 
+    public void StopMove()
+    {
+       _isMove = false;
+      _direction = Vector2.zero;
+      _rigidbody.velocity = _direction;
+          //  Debug.Log("STOP"+_rigidbody.velocity);
+    }
+
    
     private void UpdateDirectionEnter( Vector2 normal )
    {
@@ -187,20 +196,23 @@ public class BallMover : MonoBehaviour
       _rigidbody.velocity = _direction.normalized * _speed;
    }
 
-  /* 
+/*   
    private void FixedUpdate()
   {
 
-         if( Input.GetKeyDown(KeyCode.Space))
+         if( Input.anyKeyDown)
        {
+          UnityEngine.Debug.Log("запуск теста");
          int numTests = 1000 * 20;
          using(new CustomTimer("Controlled Test", numTests))
          {
              for( int i = 0; i < numTests ; ++i)
              {
-               // Func();            
+               // Func();   
+               Vector2.Reflect(Vector2.left, Vector2.up);        
              }
          }
+         UnityEngine.Debug.Log("окончание теста");
        }
 
       if( IsMove == true )
@@ -213,8 +225,8 @@ public class BallMover : MonoBehaviour
      // UnityEngine.Debug.Log(_normal);
 #endif
   }
-*/
-   
 
+   
+*/
   
 }

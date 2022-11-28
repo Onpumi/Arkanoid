@@ -14,13 +14,6 @@ public class Hearth : MonoBehaviour
     private void Awake()
     {
       _parentImage = this.transform;
-       //var item1 = Instantiate( _prefabImage, _parentImage );
-       //var item2 = Instantiate( _prefabImage, _parentImage );
-       //item2.position = nextPosition(item1);
-       //var item3 = Instantiate( _prefabImage, _parentImage );
-       //item3.position = new Vector3( item2.position.x + _grid.localScale.x * 3, item1.position.y, item1.position.z );
-
-
     }
     
     public void DisplayItems( int count )

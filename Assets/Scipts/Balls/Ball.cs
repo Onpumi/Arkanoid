@@ -18,8 +18,8 @@ public class Ball : MonoBehaviour, IPoolable<Ball>
 
     public void Despawn()
   {
-    transform.gameObject.SetActive(false);
+      _ballMover.StopMove();
+      transform.gameObject.SetActive(false);
   }
-
 
  }
