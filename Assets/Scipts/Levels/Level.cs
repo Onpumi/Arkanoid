@@ -6,17 +6,16 @@ public class Level : MonoBehaviour, IPoolable<Level>
 {
    [SerializeField] private int _index;
    [SerializeField] private PropertyBonus[] _propertyBonuses;
-   private const string _prefix = "Level";
+   private const string Prefix = "Level";
    
    private readonly StringBuilder _nameBuilder = new StringBuilder();
-   private RayBall _rayball;
    public string FullName { get; private set; }
    public int Index => _index;
 
    
   private void Awake()
   {
-      FullName = _nameBuilder.Append(_prefix).Append(' ').Append(_index).ToString();
+      FullName = _nameBuilder.Append(Prefix).Append(' ').Append(_index).ToString();
   }
 
     public void SpawnFrom( IPool<Level> pool )
@@ -40,7 +39,5 @@ public class Level : MonoBehaviour, IPoolable<Level>
       }
       return bonusBall.Count;
   }
-  
-  //public int 
 
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Board : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class Board : MonoBehaviour
   [SerializeField] private int[] _anglesMove;
   [SerializeField] private float _speed;
   [SerializeField] private RayBall _rayBall;
-  [SerializeField] private FactoryBalls _factoryBalls;
+  [FormerlySerializedAs("_factoryBalls")] [SerializeField] private ContainerBalls _containerBalls;
   [SerializeField] private HealthView _healthView;
   [SerializeField] private MenuEndView _lossView;
   [SerializeField] private SoundsPlayer _soundPlayer;
@@ -46,14 +47,20 @@ public class Board : MonoBehaviour
 
     private void OnEnable()
     {
-        _factoryBalls.OnLossAllBalls += TakeDamage;
+        _containerBalls.OnLossAllBalls += TakeDamage;
         Health.OnLossHealth += FinishLevel;
     }
 
     private void OnDisable()
     {
-       _factoryBalls.OnLossAllBalls -= TakeDamage;
+       _containerBalls.OnLossAllBalls -= TakeDamage;
        Health.OnLossHealth -= FinishLevel;
+    }
+
+    private void InvokeBonus( Action actionBonus )
+    {
+        actionBonus?.Invoke();
+        _soundPlayer.PlayGetBonus();
     }
 
     private void OnCollisionEnter2D( Collision2D collision )
@@ -62,15 +69,10 @@ public class Board : MonoBehaviour
        if( collision.collider.TryGetComponent(out BonusBall bonusBall) )
        {
 
-          if( bonusBall.Type == TypeBonus.ReproductionOne )
-          {
-             OnReproductionOne?.Invoke();
-             _soundPlayer.PlayGetBonus();
-          } 
+          if( bonusBall.Type == TypeBonus.ReproductionOne ) 
+              InvokeBonus(OnReproductionOne);
           else if( bonusBall.Type == TypeBonus.ReproductionTwo )
-          {
-            // bonusBall.ActivateBonus( OnReproductionTwo );
-          }
+              InvokeBonus(OnReproductionTwo);
           bonusBall.transform.gameObject.SetActive(false);
        }
     }

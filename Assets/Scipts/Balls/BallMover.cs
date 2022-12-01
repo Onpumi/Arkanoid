@@ -4,13 +4,14 @@ using UnityEngine;
 using Unity.Burst;
 using Unity.Profiling;
 using System.Diagnostics;
+using UnityEngine.Serialization;
 using Debug = UnityEngine.Debug;
 
 [BurstCompile]
 public class BallMover : MonoBehaviour
 {
    [SerializeField] private SoundsPlayer _soundPlayer;
-   [SerializeField] private FactoryBalls _factoryBalls;
+   [FormerlySerializedAs("_factoryBalls")] [SerializeField] private ContainerBalls _containerBalls;
    private float _speed;
    private bool _isMove = false;
    private Vector2 _direction;
@@ -25,21 +26,23 @@ public class BallMover : MonoBehaviour
    private BallTime _ballTime;
    Stopwatch st;
    private Quaternion[] _anglesRotateBall;
+   private Transform _transformBall;
 
 
    private void OnEnable()
    {
-       _factoryBalls.OnMoveBall += Translate;
+       _containerBalls.OnMoveBall += Translate;
    }
 
    private void OnDisable()
    {
-       _factoryBalls.OnMoveBall += Translate;
+       _containerBalls.OnMoveBall += Translate;
    }
 
 
    private void Awake()
    {
+       _transformBall = transform;
       _direction = Vector3.up;
       _rigidBody = GetComponent<Rigidbody2D>();
       //_speed = Time.fixedDeltaTime * 2f * 70f * 2f;
@@ -60,14 +63,15 @@ public class BallMover : MonoBehaviour
         _soundPlayer.PlayHitBall();
        }
 
-      var closestPoint = collider.ClosestPoint( transform.position  );
-      var normal = (Vector2)transform.position - closestPoint;
-      normal.Normalize();
-      UpdateDirectionEnter( normal );    
+       var closestPoint = collider.ClosestPoint( transform.position  );
+       //var normal = (Vector2)transform.position - closestPoint;
+       var normal = (Vector2)_transformBall.position - closestPoint;
+       normal.Normalize();
+       UpdateDirectionEnter( normal );    
        if( collider.TryGetComponent(out Brick brick) )
-      {
-        brick.Despawn();
-      }
+       {
+        brick.DeSpawn();
+       }
   }
   
   private void OnCollisionEnter2D( Collision2D collision )
@@ -78,8 +82,8 @@ public class BallMover : MonoBehaviour
         _soundPlayer.PlayHitBall();
        }
 
-      var closestPoint = collision.collider.ClosestPoint( transform.position  );
-      var normal = ((Vector2)transform.position - closestPoint).normalized;
+     var closestPoint = collision.collider.ClosestPoint( transform.position  );
+     var normal = ((Vector2)_transformBall.position - closestPoint).normalized;
 
       UpdateDirectionEnter( normal );
 
@@ -87,12 +91,12 @@ public class BallMover : MonoBehaviour
       {
         if( _ballTime.isNeedTime() )
         {
-           brick.Despawn();
+           brick.DeSpawn();
            _ballTime.FixedTime();
         }
       }
-    }
-      _rigidbody.velocity = _direction.normalized * _speed;
+     }
+     _rigidbody.velocity = _direction.normalized * _speed;
    }
 
 

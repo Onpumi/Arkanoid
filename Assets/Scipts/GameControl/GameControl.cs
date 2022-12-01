@@ -1,9 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Diagnostics;
-using UnityEngine.SceneManagement;
-using Debug = UnityEngine.Debug;
+using UnityEngine.Serialization;
 
 public class GameControl : MonoBehaviour
 {
@@ -14,7 +11,7 @@ public class GameControl : MonoBehaviour
    [SerializeField] private  MenuEndView _winView;
    [SerializeField] private  Board _board;
    [SerializeField] private  Bricks _bricks;
-   [SerializeField] private  FactoryBalls _factoryBalls;
+   [SerializeField] private  ContainerBalls _containerBalls;
    [SerializeField] private  PlayingScene _playingScene;
    [SerializeField] private  StatusesGame _statusesGame;
    private List<ItemMenu> itemsMenu = new List<ItemMenu>();
@@ -32,7 +29,7 @@ public class GameControl : MonoBehaviour
 
    private void OnEnable()
    {
-      _factoryBalls.OnLossAllBalls += RestartBalls;
+      _containerBalls.OnLossAllBalls += RestartBalls;
       _board.OnLostAll += FrozeLevel;
       _bricks.OnDestroyAllBricks += FrozeLevel;
       SignTheView( _lossView );
@@ -41,7 +38,7 @@ public class GameControl : MonoBehaviour
 
    private void OnDisable()
    {
-      _factoryBalls.OnLossAllBalls -= RestartBalls;
+      _containerBalls.OnLossAllBalls -= RestartBalls;
       _board.OnLostAll -= FrozeLevel;
       _bricks.OnDestroyAllBricks -= FrozeLevel;
       UnsubscribeViews();
@@ -71,17 +68,19 @@ public class GameControl : MonoBehaviour
       view.transform.parent.gameObject.SetActive(true);
       view.transform.gameObject.SetActive(true);
       _rayball.enabled = false;
+//      _bricks.DisableBonuses();
       _bricks.enabled = false;
-      _factoryBalls.ReturnPoolAllBalls();
-      _factoryBalls.ResetBalls(); 
-      _factoryBalls.enabled = false;
+      _containerBalls.ReturnPoolAllBalls();
+      _containerBalls.ResetBalls(); 
+      _containerBalls.enabled = false;
       _board.enabled = false;
+      _playingScene.FrozePlay();
       
    }
 
    private void RestartBalls()
    {
-     _factoryBalls.enabled = true;
+     _containerBalls.enabled = true;
    }
 
    private void ChangeAfterLost( SelectFromLoss change )

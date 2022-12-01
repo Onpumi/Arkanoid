@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 #if UNITY_EDITOR 
 
@@ -12,6 +13,8 @@ namespace UnityEditor
     [CustomGridBrush(false, true, false, "Prefab Brush")]
     public class PrefabBrush : UnityEditor.Tilemaps.GridBrush
     {
+        public Color m_color = Color.white;
+        public int m_a = 1;
         private const float k_PerlinOffset = 100000f;
         public GameObject[] m_Prefabs;
         public float m_PerlinScale = 0.5f;
@@ -65,6 +68,7 @@ namespace UnityEditor
                 Undo.RegisterCreatedObjectUndo((Object)instance, "Paint Prefabs");
                 instance.transform.SetParent(brushTarget.transform);
                 instance.transform.position = grid.LocalToWorld(grid.CellToLocalInterpolated(new Vector3Int(position.x, position.y, m_Z) + new Vector3(.5f, .5f, .5f)));
+                instance.transform.GetComponent<SpriteRenderer>().color = m_color;
             }
         }
  
@@ -124,13 +128,12 @@ namespace UnityEditor
         public override void OnPaintInspectorGUI()
         {
             m_SerializedObject.UpdateIfRequiredOrScript();
-            prefabBrush.m_PerlinScale = EditorGUILayout.Slider("Perlin Scale", prefabBrush.m_PerlinScale, 0.001f, 0.999f);
-            prefabBrush.m_Z = EditorGUILayout.IntField("Position Z", prefabBrush.m_Z);
+          //  prefabBrush.m_PerlinScale = EditorGUILayout.Slider("Perlin Scale", prefabBrush.m_PerlinScale, 0.001f, 0.999f);
+          //  prefabBrush.m_Z = EditorGUILayout.IntField("Position Z", prefabBrush.m_Z);
             EditorGUILayout.PropertyField(m_Prefabs, true);
-           
-            prefabBrush.randomPrefab = EditorGUILayout.Toggle("Random Prefab", prefabBrush.randomPrefab);
-            prefabBrush.prefabToTPrint = EditorGUILayout.IntField("Prefab to Print", prefabBrush.prefabToTPrint);
-           
+      //      prefabBrush.randomPrefab = EditorGUILayout.Toggle("Random Prefab", prefabBrush.randomPrefab);
+        //    prefabBrush.prefabToTPrint = EditorGUILayout.IntField("Prefab to Print", prefabBrush.prefabToTPrint);
+              //prefabBrush.m_color = EditorGUILayout.IntField("Color", prefabBrush.m_color);
  
             m_SerializedObject.ApplyModifiedPropertiesWithoutUndo();
         }

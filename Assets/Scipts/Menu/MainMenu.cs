@@ -1,18 +1,19 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _levels;
-    [SerializeField] private FactoryBalls _factoryBalls;
+    [FormerlySerializedAs("_factoryBalls")] [SerializeField] private ContainerBalls _containerBalls;
     [SerializeField] private PlayingScene _playingScene;
 
 
     private void Awake()
     {
-      _factoryBalls.SpawnBallsToPool();
+      _containerBalls.SpawnBallsToPool();
     }
 
     private void OnEnable()
@@ -38,5 +39,6 @@ public enum PlayMode
 {
    Menu,
    Play,
+   Frozen,
    Levels
 }

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Bricks : MonoBehaviour
 {
     [SerializeField] BonusBall[] _bonusPrefabs;
-    [SerializeField] FactoryBalls _factoryBalls;
+    [FormerlySerializedAs("_factoryBalls")] [SerializeField] ContainerBalls _containerBalls;
     [SerializeField] Board _board;
     [SerializeField] MenuEndView _winView;
     [SerializeField] LevelManager _levelManager;
@@ -20,15 +21,10 @@ public class Bricks : MonoBehaviour
     {
         LoadBricks();
         InitBonuses();
-      _factoryBalls.OnLossAllBalls += UpdateBonuses;
+      _containerBalls.OnLossAllBalls += UpdateBonuses;
     }
 
-    private void Start()
-    {
-       //       LoadBricks();
-         //     InitBonuses();
-    }
-
+   
     public void Restart()
     {
         LoadBricks();
@@ -37,7 +33,7 @@ public class Bricks : MonoBehaviour
 
     private void OnDisable()
     {
-      _factoryBalls.OnLossAllBalls -= UpdateBonuses;
+      _containerBalls.OnLossAllBalls -= UpdateBonuses;
       _bricksBreak.Clear();
       _bricks.Clear();
     }
@@ -45,7 +41,8 @@ public class Bricks : MonoBehaviour
     private void LoadBricks()
     {
         Transform transformBricks;
-        transformBricks = transform.GetChild(transform.childCount-1).GetChild(0).GetChild(0);
+    //    transformBricks = transform.GetChild(transform.childCount-1).GetChild(0).GetChild(0);
+         transformBricks = transform.GetChild(transform.childCount-1);
         var count = transformBricks.childCount;
         _countBricks = 0;
         _bricksBreak ??= new List<Brick>();
@@ -108,12 +105,11 @@ public class Bricks : MonoBehaviour
         }
     }
 
-    public void ClearBonuses()
+    public void DisableBonuses()
     {
-        foreach( var bonus in _bonuses )
+        foreach( var brick in _bricksBreak )
         {
-            //  Destroy(bonus.transform.gameObject);
-            bonus.transform.gameObject.SetActive(false);
+            brick.DisableBonus();
         }
     }
 

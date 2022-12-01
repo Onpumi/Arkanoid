@@ -36,9 +36,11 @@ MonoBehaviour:
   m_Pivot: {x: 0, y: 0, z: 0}
   m_CanChangeZPosition: 0
   m_FloodFillContiguousOnly: 1
+  m_color: {r: 0.20959115, g: 0.518, b: 0.03320511, a: 1}
+  m_a: 1
   m_Prefabs:
-  - {fileID: 4483792846465821272, guid: ec3635e316eb6574d990817a546d32c5, type: 3}
+  - {fileID: 6479676182725939673, guid: 4def2daf1d4da23458fc3187cd3b4fa5, type: 3}
   m_PerlinScale: 0.5
   m_Z: 0
   prefabToTPrint: 0
-  randomPrefab: 1
+  randomPrefab: 0

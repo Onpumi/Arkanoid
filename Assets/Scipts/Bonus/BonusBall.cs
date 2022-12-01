@@ -44,6 +44,11 @@ public class BonusBall : MonoBehaviour
        IsOpen = true;
     }
 
+    public void DisableBonus()
+    {
+        IsOpen = false;
+    }
+
     private void Move()
     {
        transform.position += _directionMove;

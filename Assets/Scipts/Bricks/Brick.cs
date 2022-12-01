@@ -11,28 +11,14 @@ public class Brick : MonoBehaviour
 
    private void OnEnable()
    {
-      _bricks = transform.parent.parent.parent.parent.GetComponent<Bricks>();
+//      _bricks = transform.parent.parent.parent.parent.GetComponent<Bricks>();
+       _bricks = transform.parent.parent.GetComponent<Bricks>();
    }
 
-
-   private void OnCollisionEnter2D( Collision2D collision )
+   public void DeSpawn()
    {
-
-      //   if( collision.contactCount > 1 ) { Debug.Log(count++); }
-
-      //if( collision.collider.TryGetComponent(out BallMover ballMover) )
-      //{
-            
-         //ballMover.UpdateDirection( collision.contacts[0].normal );
-         //transform.gameObject.SetActive(false);
-      //}
-   }
-
-  
-
-   public void Despawn()
-   {
-      transform.gameObject.SetActive(false);
+       if( transform != null )
+        transform.gameObject.SetActive(false);
    }
 
      public void SpawnBonus( BonusBall prefabBonus )
@@ -46,7 +32,6 @@ public class Brick : MonoBehaviour
    private void OnDisable()
    {
       OpenBrick();
-      _bonusBall = null;
    }
 
 
@@ -64,8 +49,12 @@ public class Brick : MonoBehaviour
           }
    }
 
+   public void DisableBonus()  
+   {
+       _bonusBall.DisableBonus();
+   }
 
-  public void SetColor( Color color )
+   public void SetColor( Color color )
   {
     transform.GetComponent<SpriteRenderer>().color = color;
   }

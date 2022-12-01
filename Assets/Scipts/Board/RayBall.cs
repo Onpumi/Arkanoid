@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class RayBall : MonoBehaviour
 {
@@ -13,23 +14,21 @@ public class RayBall : MonoBehaviour
     [SerializeField] private int _countStep;
     [SerializeField] private LayerMask _maskaRaycast;
     [SerializeField] private Ball _ball;
-    //[SerializeField] private BallMover _ballMover;
-    [SerializeField] private FactoryBalls _factoryBalls;
-    private Vector3 _prevTarget;
+    [SerializeField] private ContainerBalls _containerBalls;
+    [SerializeField] private PlayingScene _playingScene;
     private Vector3 _target;
     public bool IsDraw { get; private set; }
     private List<Transform> _balls;
     private List<Transform> _hitBalls;
     private List<Transform[]> _hitNormals;
 
-    private int _sizeNormal = 5;
+    private const int SizeNormal = 5;
     private float _scaleBall;
-    private float _radiusBall = 0.02f;
-    private float SizeBall => _scaleBall * _radiusBall;
+    private const float RadiusBall = 0.02f;
+    private float SizeBall => _scaleBall * RadiusBall;
     private Vector3 _direction;
     private bool _isReady = false;
-    public Vector3 DirectionRay => _direction;
-    private Vector3 _startBallPosition = new Vector3(-1f,-2.5f);
+    private  readonly Vector3 _startBallPosition = new Vector3(-1f,-2.5f);
 
     private void Awake()
     {
@@ -37,8 +36,6 @@ public class RayBall : MonoBehaviour
         _balls = new List<Transform>();
         _hitBalls = new List<Transform>();
         _hitNormals = new List<Transform[]>();
-       // _startBallPosition = _ball.transform.position;
-      //  _radiusBall = 0.02f;
       if( _ball )
       {
            _scaleBall = _ball.transform.localScale.x;
@@ -47,16 +44,17 @@ public class RayBall : MonoBehaviour
 
     private void OnEnable()
     {
-      //_ball = _factoryBalls.SpawnBall();
-      _ball = _factoryBalls.GetFirstBall();
+      _ball = _containerBalls.GetFirstBall();
       _ball.transform.position = _startBallPosition;
       _ball.BallMover.StopMove();
+      _isReady = false;
     }
 
     private void OnDisable()
     {
-     // if( _ball.BallMover.IsMove == false )
-       // _factoryBalls.DespawnBall( _ball );
+        _isReady = false;
+        // if( _ball.BallMover.IsMove == false )
+        // _factoryBalls.DespawnBall( _ball );
     }
 
     private void ClearBalls()
@@ -89,7 +87,7 @@ public class RayBall : MonoBehaviour
         {
           foreach( var hitNormal in _hitNormals )
           {
-              for( int i = 0 ; i < _sizeNormal ; i++ )
+              for( int i = 0 ; i < SizeNormal ; i++ )
               {
                 Destroy( hitNormal[i].gameObject );
               }
@@ -101,13 +99,13 @@ public class RayBall : MonoBehaviour
     private void DrawNormal( Vector3 startPosition, Vector3 direction )
     {
 
-       Transform[] normalBalls = new Transform[_sizeNormal];
+       Transform[] normalBalls = new Transform[SizeNormal];
 
-       for( int i = 0 ; i < _sizeNormal ; i++ )
+       for( int i = 0 ; i < SizeNormal ; i++ )
        {
           normalBalls[i] = Instantiate(_prefabNormalBall, startPosition + (i * _step * 0.5f) * direction, Quaternion.identity);
        }
-      _hitNormals.Add(normalBalls);
+       _hitNormals.Add(normalBalls);
     }
 
     private void ClearRay()
@@ -125,14 +123,14 @@ public class RayBall : MonoBehaviour
         var targetDirection = _target-startPosition;
         IsDraw = true;
         ClearRay();
-        Vector3 startRayPosition = _ball.transform.position;
+        var startRayPosition = startPosition;
         float startStep = 0;
         for( int i = 0; i < 2 ; i++ )
         {
         
          var hit = Physics2D.CircleCast( startRayPosition + targetDirection.normalized * startStep, SizeBall, targetDirection, Mathf.Infinity, ~_maskaRaycast );
 
-         Vector3 hitPoint = Vector3.zero;
+         Vector3 hitPoint; // = Vector3.zero;
 
          if( hit.collider )
          {
@@ -146,8 +144,8 @@ public class RayBall : MonoBehaviour
             break;
          }
 
-            var prevMagnitude = (hitPoint-currentPosition).magnitude;
-            Vector3 directionRay = (hitPoint-currentPosition);
+         var prevMagnitude = (hitPoint-currentPosition).magnitude;
+         Vector3 directionRay = (hitPoint-currentPosition);
 
           for( int j = 0 ; j < 1000 && directionRay.magnitude > 0.1f ; j++ )
          {
@@ -160,43 +158,37 @@ public class RayBall : MonoBehaviour
            }
          }
 
-        startRayPosition = hitPoint;
-        targetDirection = Vector3.Reflect(targetDirection.normalized * 0.02f,hit.normal.normalized);
-        startStep = _step + 1;
-     }
-        _prevTarget = _target;
+         startRayPosition = hitPoint;
+         targetDirection = Vector3.Reflect(targetDirection.normalized * 0.02f,hit.normal.normalized);
+         startStep = _step + 1;
+        }
     }
 
-
-  //  private int count1 = 0;
     private void StartRay()
     {
           if( Input.GetMouseButton(0) )
-        {
-            DrawRay();
-            _isReady = true;
-          //  Debug.Log("нажали" + count1++);
-        }
+          {
+           DrawRay();
+           _isReady = true;
+          }
 
-        if( Input.GetMouseButtonUp(0))
-        {
-          if( _isReady )
-          { 
+          if( Input.GetMouseButtonUp(0) && _playingScene.PlayMode == PlayMode.Play )
+          {
+           if( _isReady )
+           { 
               ClearRay();
               IsDraw = false;
               _direction = _target - _startBallPosition;
               _ball.BallMover.StartMove( _direction );
               enabled = false;
               _isReady = false;
+           }
           }
-        }
     }
 
     private void Update()
     {
-
         StartRay();
-    
     }
 
 }

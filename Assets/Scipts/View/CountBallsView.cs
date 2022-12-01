@@ -1,9 +1,10 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CountBallsView : MonoBehaviour
 {
-   [SerializeField] private FactoryBalls _factoryBalls;
+   [FormerlySerializedAs("_factoryBalls")] [SerializeField] private ContainerBalls _containerBalls;
    private TMP_Text _tmpText;
    private void Awake()
    {
@@ -13,18 +14,18 @@ public class CountBallsView : MonoBehaviour
 
    private void OnEnable()
    {
-     _factoryBalls.OnUpdateCountShowBall += UpdateDisplayCount;
+     _containerBalls.OnUpdateCountShowBall += UpdateDisplayCount;
    }
 
    private void OnDisable()
    {
-     _factoryBalls.OnUpdateCountShowBall -= UpdateDisplayCount;
+     _containerBalls.OnUpdateCountShowBall -= UpdateDisplayCount;
    }
 
 
    private void UpdateDisplayCount( )
    {
-     _tmpText.text = _factoryBalls.CountBalls.ToString();
+     _tmpText.text = _containerBalls.CountBalls.ToString();
    }
 
 

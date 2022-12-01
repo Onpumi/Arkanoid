@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BonusActivator : MonoBehaviour
 {
    [SerializeField] private Board _board;
    [SerializeField] private Ball _ball;
-   [SerializeField] private FactoryBalls _factoryBalls;
+   [FormerlySerializedAs("_factoryBalls")] [SerializeField] private ContainerBalls _containerBalls;
 
    private void OnEnable()
    {

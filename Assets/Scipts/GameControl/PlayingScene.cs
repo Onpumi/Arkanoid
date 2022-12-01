@@ -1,14 +1,14 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayingScene : MonoBehaviour
 {
-    [SerializeField] LevelManager _levelManager;
+    [SerializeField] private LevelManager _levelManager;
     [SerializeField] private Ball   _ball;
     [SerializeField] private Transform _gameZone;
     [SerializeField] private Transform _menuZone;
     [SerializeField] private Transform _parentPopupMenuViews;
     private PlayMode _playMode;
+    public PlayMode PlayMode => _playMode;
 
    private void Awake()
    {
@@ -28,7 +28,7 @@ public class PlayingScene : MonoBehaviour
    {
       if( playMode == PlayMode.Menu )
       {
-         _menuZone.gameObject.SetActive(true);
+        _menuZone.gameObject.SetActive(true);
         _gameZone.gameObject.SetActive(false);
       }
       else if( playMode == PlayMode.Play )
@@ -57,6 +57,11 @@ public class PlayingScene : MonoBehaviour
       _playMode = PlayMode.Play;
       _levelManager.RestartLevel();
       UpdateScene(PlayMode.Play);
+   }
+
+   public void FrozePlay()
+   {
+       _playMode = PlayMode.Frozen;
    }
 }
 
