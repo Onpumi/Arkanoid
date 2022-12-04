@@ -65,13 +65,14 @@ public class GameControl : MonoBehaviour
 
    private void FrozeLevel( MenuEndView view )
    {
+       Debug.Log("Frozen");
       view.transform.parent.gameObject.SetActive(true);
       view.transform.gameObject.SetActive(true);
       _rayball.enabled = false;
 //      _bricks.DisableBonuses();
       _bricks.enabled = false;
-      _containerBalls.ReturnPoolAllBalls();
-      _containerBalls.ResetBalls(); 
+      //_containerBalls.ReturnPoolAllBalls();
+      //_containerBalls.ResetBalls(); 
       _containerBalls.enabled = false;
       _board.enabled = false;
       _playingScene.FrozePlay();

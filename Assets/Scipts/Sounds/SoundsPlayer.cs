@@ -10,13 +10,14 @@ public class SoundsPlayer : MonoBehaviour
     private float _time;
     public bool isCanPlay => Time.time -_time > 0.07f;
     
+    
 
   
       private void Start()
     {
         _audio = GetComponent<AudioSource>();
+        
     }
-
      public void PlayHitBall() 
     {
        _audio.PlayOneShot(_audioBall);

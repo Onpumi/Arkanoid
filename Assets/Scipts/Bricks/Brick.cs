@@ -17,7 +17,7 @@ public class Brick : MonoBehaviour
 
    public void DeSpawn()
    {
-       if( transform != null )
+       if( transform.gameObject != null )
         transform.gameObject.SetActive(false);
    }
 

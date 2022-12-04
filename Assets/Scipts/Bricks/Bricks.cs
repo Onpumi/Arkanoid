@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 public class Bricks : MonoBehaviour
 {
     [SerializeField] BonusBall[] _bonusPrefabs;
-    [FormerlySerializedAs("_factoryBalls")] [SerializeField] ContainerBalls _containerBalls;
+    [SerializeField] ContainerBalls _containerBalls;
     [SerializeField] Board _board;
     [SerializeField] MenuEndView _winView;
     [SerializeField] LevelManager _levelManager;
@@ -22,6 +22,11 @@ public class Bricks : MonoBehaviour
         LoadBricks();
         InitBonuses();
       _containerBalls.OnLossAllBalls += UpdateBonuses;
+      foreach ( var bonus in _bonuses )
+      {
+          bonus.OnReproductionOne += _containerBalls.SpawnAllBalls;
+          bonus.OnReproductionTwo += _containerBalls.SpawnThreeBalls;
+      }
     }
 
    
@@ -33,15 +38,20 @@ public class Bricks : MonoBehaviour
 
     private void OnDisable()
     {
-      _containerBalls.OnLossAllBalls -= UpdateBonuses;
-      _bricksBreak.Clear();
-      _bricks.Clear();
+        foreach ( var bonus in _bonuses )
+        {
+            bonus.OnReproductionOne -= _containerBalls.SpawnAllBalls;
+            bonus.OnReproductionTwo -= _containerBalls.SpawnThreeBalls;
+        }
+        _containerBalls.OnLossAllBalls -= UpdateBonuses;
+        DisableBonuses();
+        _bricksBreak.Clear();
+        _bricks.Clear();
     }
 
     private void LoadBricks()
     {
         Transform transformBricks;
-    //    transformBricks = transform.GetChild(transform.childCount-1).GetChild(0).GetChild(0);
          transformBricks = transform.GetChild(transform.childCount-1);
         var count = transformBricks.childCount;
         _countBricks = 0;
@@ -65,12 +75,7 @@ public class Bricks : MonoBehaviour
         _bonuses ??= new List<BonusBall>();
         _bonuses.Clear();
     }
-
-    public void Show()
-    {
-        Debug.Log($"bonus count {_bonuses.Count}");
-    }
-
+  
     private void SetColor( Transform transformBricks, Color color, int index )
     {
         _bricks[index] = transformBricks.GetChild(index).GetComponent<Brick>();
@@ -107,9 +112,9 @@ public class Bricks : MonoBehaviour
 
     public void DisableBonuses()
     {
-        foreach( var brick in _bricksBreak )
+        foreach( var bonus in _bonuses )
         {
-            brick.DisableBonus();
+            bonus.DisableBonus();
         }
     }
 
@@ -127,8 +132,6 @@ public class Bricks : MonoBehaviour
     {
 
         if( _bricksBreak == null || _bricksBreak.Count == 0 ) { return; }
-       // Debug.Log( "!!!!!!!!!" + indexBrick + " " + _bricksBreak.Count );
-//        while( _bricksBreak[indexBrick].IsNull != true && indexBrick < _bricksBreak.Count )
           while(  indexBrick < _bricksBreak.Count   )
           {
               if (_bricksBreak[indexBrick].IsNull != true) indexBrick++;

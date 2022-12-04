@@ -22,24 +22,21 @@ public class Board : MonoBehaviour
   public float Speed => _speed;
   private List<float[]> _segmentsBoard = new List<float[]>();
   public event Action OnMove;
-  public event Action OnReproductionOne;
-  public event Action OnReproductionTwo;
   public event Action<MenuEndView> OnLostAll;
 
   
     private void Awake()
     {
-      int countAngles = _anglesMove.Length * 2 - 1;
-      int countAnglesRight = _anglesMove.Length - 1;
-      float lengthSegment = 1f / (float)countAngles;
+      var countAngles = _anglesMove.Length * 2 - 1;
+      var countAnglesRight = _anglesMove.Length - 1;
+      var lengthSegment = 1f / (float)countAngles;
       float[] segment = { 0f, lengthSegment };
       _rigidbody = GetComponent<Rigidbody2D>();
 
       for( int i = 1 ; i < countAnglesRight + 2 ; i++ )
-     {
+      {
         _segmentsBoard.Add(new float[2]{ lengthSegment * (float)(i-1), lengthSegment * (float)(i) }); 
-     }
-      
+      }
       
       Health = new Health( 3, 5, _healthView );
       _healthView.DisplayItems( Health.CurrentValue );
@@ -56,24 +53,11 @@ public class Board : MonoBehaviour
        _containerBalls.OnLossAllBalls -= TakeDamage;
        Health.OnLossHealth -= FinishLevel;
     }
-
-    private void InvokeBonus( Action actionBonus )
-    {
-        actionBonus?.Invoke();
-        _soundPlayer.PlayGetBonus();
-    }
-
     private void OnCollisionEnter2D( Collision2D collision )
     {
-
        if( collision.collider.TryGetComponent(out BonusBall bonusBall) )
        {
-
-          if( bonusBall.Type == TypeBonus.ReproductionOne ) 
-              InvokeBonus(OnReproductionOne);
-          else if( bonusBall.Type == TypeBonus.ReproductionTwo )
-              InvokeBonus(OnReproductionTwo);
-          bonusBall.transform.gameObject.SetActive(false);
+           bonusBall.ActivateBonus();
        }
     }
 
@@ -86,7 +70,7 @@ public class Board : MonoBehaviour
             target.x > _border.MinHorizontalPosition + transform.localScale.x / 2f + _border.FrameWidth / 2f 
           )
        {
-       transform.position = target;
+         transform.position = target;
          if( directionX != 0 )
          {
            OnMove?.Invoke();

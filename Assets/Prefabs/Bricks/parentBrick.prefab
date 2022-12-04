@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2567686269577676743}
   - component: {fileID: 4211156639928734519}
   - component: {fileID: 3594233174454885507}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Square (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4866354801801877289}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: parentBrick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 4422745380683342125}
   - component: {fileID: 7069733925993101890}
   - component: {fileID: 5439072931196682312}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 2430843090095145454}
   - component: {fileID: 1584482635582591730}
   - component: {fileID: 2875156456021795955}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Square (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -551,7 +551,7 @@ GameObject:
   - component: {fileID: 2497095575603065890}
   - component: {fileID: 1394997487914140480}
   - component: {fileID: 1776875249674434995}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Unity.Burst;
 
-[BurstCompile]
 public class ContainerBalls : MonoBehaviour
 {
     private Pool<Ball> _pool;
@@ -13,6 +11,7 @@ public class ContainerBalls : MonoBehaviour
     [SerializeField] private Ball _ball;
     [SerializeField] private BallMover _ballMover;
     [SerializeField] private Board _board;
+    [SerializeField] private SoundsPlayer _soundsPlayer;
     private const int MaxCountBalls = 400;
     private List<Ball> _activeBalls;
     public event Action OnLossAllBalls;
@@ -20,38 +19,38 @@ public class ContainerBalls : MonoBehaviour
     public event Action OnMoveBall;
     public int CountBalls { get; private set; } = 1;
     private IEnumerator _coroutineSpawn;
+    private SpawnerBall _spawnerBall;
+    
 
     private void Awake()
     {
         _ball.transform.gameObject.SetActive(false);
     }
 
-    public void SpawnBallsToPool()
+    private void SpawnBallsToPool()
     {
        _factory ??= new PrefabFactory<Ball>(_ball, transform, "ball");
-       _pool ??= new Pool<Ball>(_factory,500);
+       _pool ??= new Pool<Ball>(_factory,550);
        _activeBalls ??= new List<Ball>();
+       _spawnerBall ??= new SpawnerBall();
     }
     
     private void OnEnable()
     {
       SpawnBallsToPool();
       CountBalls++;
-     _ball = _pool.Get();
+      _ball = _pool.Get();
       _activeBalls.Add( _ball );
-      _board.OnReproductionOne += SpawnAllBalls;
     }
 
     private void OnDisable()
     {
-        CountBalls--;
-        _activeBalls.Remove( _ball );
+        //CountBalls--;
+      // _activeBalls.Remove( _ball );
+         ReturnPoolAllBalls();
+         ResetBalls(); 
         _pool.Return(_ball);
-        _board.OnReproductionOne -= SpawnAllBalls;
     }
-
-
-
      public void SpawnAllBalls()
      {
          _coroutineSpawn = SpawnBalls();
@@ -76,23 +75,12 @@ public class ContainerBalls : MonoBehaviour
          foreach( Ball ball in _activeBalls )
          {
              if (CountBalls >= MaxCountBalls - 1) break;
-
-            Ball ball1 = _pool.Get();
-            direction1 = Quaternion.Euler(0,0,45) * ball.BallMover.Direction;
-            ball1.transform.position = ball.transform.position;
-            ball1.BallMover.StartMove( direction1 );
-            spawnNewBalls.Add(ball1);
-            CountBalls++;
-            countSpawn++;
-
-            Ball ball2 = _pool.Get();
-            direction2 = Quaternion.Euler(0,0,-45) * ball.BallMover.Direction;
-            ball2.transform.position = ball.transform.position;
-            ball2.BallMover.StartMove( direction2 );
-            spawnNewBalls.Add(ball2);
-            CountBalls++;
-            countSpawn++;
-
+            int[] angles = { -45, 45 };
+             var (ball1, ball2) = _spawnerBall.SpawnTwoBall( ball, _pool, angles);
+             spawnNewBalls.Add(ball1);
+             spawnNewBalls.Add(ball2);
+             CountBalls+=2;
+             countSpawn+=2;
 
             if(countSpawn < countMaxSpawnInFrame ) continue;
             yield return new WaitForFixedUpdate();
@@ -100,9 +88,25 @@ public class ContainerBalls : MonoBehaviour
         }
         _activeBalls = _activeBalls.Concat(spawnNewBalls).ToList();
         OnUpdateCountShowBall?.Invoke();
+        _soundsPlayer.PlayGetBonus();
      }
 
-    
+     public void SpawnThreeBalls()
+     {
+         int[] angles = { -30, 0, 30 };
+         var spawnNewBalls = new HashSet<Ball>();
+         var (ball1, ball2, ball3) = _spawnerBall.SpawnThreeBall( _board.transform, _pool, angles );
+         CountBalls += 3;
+         spawnNewBalls.Add(ball1);
+         spawnNewBalls.Add(ball2);
+         spawnNewBalls.Add(ball3);
+         _activeBalls = _activeBalls.Concat(spawnNewBalls).ToList();
+         OnUpdateCountShowBall?.Invoke();
+         _soundsPlayer.PlayGetBonus();
+     }
+
+     public List<Ball> GetAllBalls() => _activeBalls;
+     
      public Ball SpawnBall()
      {
          CountBalls++;

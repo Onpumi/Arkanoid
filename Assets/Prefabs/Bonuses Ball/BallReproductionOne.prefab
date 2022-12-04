@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5618815628612127423}
   - component: {fileID: -7545365430858395639}
   - component: {fileID: 3388241981097992135}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: BallReproductionOne
   m_TagString: Untagged
   m_Icon: {fileID: 0}

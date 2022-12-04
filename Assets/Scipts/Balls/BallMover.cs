@@ -1,17 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Unity.Burst;
 using Unity.Profiling;
 using System.Diagnostics;
-using UnityEngine.Serialization;
-using Debug = UnityEngine.Debug;
 
-[BurstCompile]
 public class BallMover : MonoBehaviour
 {
    [SerializeField] private SoundsPlayer _soundPlayer;
-   [FormerlySerializedAs("_factoryBalls")] [SerializeField] private ContainerBalls _containerBalls;
+   [SerializeField] private ContainerBalls _containerBalls;
    private float _speed;
    private bool _isMove = false;
    private Vector2 _direction;
@@ -27,7 +21,7 @@ public class BallMover : MonoBehaviour
    Stopwatch st;
    private Quaternion[] _anglesRotateBall;
    private Transform _transformBall;
-
+   private float _speedValue = 0.0003f;
 
    private void OnEnable()
    {
@@ -76,15 +70,14 @@ public class BallMover : MonoBehaviour
   
   private void OnCollisionEnter2D( Collision2D collision )
    {
-     {
-       if( _soundPlayer.isCanPlay )
-       {
+     
+      if( _soundPlayer.isCanPlay )
+      {
         _soundPlayer.PlayHitBall();
-       }
+      }
 
-     var closestPoint = collision.collider.ClosestPoint( transform.position  );
-     var normal = ((Vector2)_transformBall.position - closestPoint).normalized;
-
+      var closestPoint = collision.collider.ClosestPoint( transform.position  );
+      var normal = ((Vector2)_transformBall.position - closestPoint).normalized;
       UpdateDirectionEnter( normal );
 
       if( collision.collider.TryGetComponent(out Brick brick) )
@@ -95,15 +88,13 @@ public class BallMover : MonoBehaviour
            _ballTime.FixedTime();
         }
       }
-     }
-     _rigidbody.velocity = _direction.normalized * _speed;
+     
+      _rigidbody.velocity = _direction.normalized * _speed;
    }
 
 
   private void OnCollisionStay2D( Collision2D collision )
   {
-  //   if( _ballTime.isNeedTime() )
-  //  {
       float angleRandom = UnityEngine.Random.Range(5,10);
       _direction = Quaternion.Euler(0,0,angleRandom) * _direction;
 
@@ -121,10 +112,6 @@ public class BallMover : MonoBehaviour
           _direction = Quaternion.Euler(0,0, 30-_angleNormalReflect) * _direction;
       }
       _rigidbody.velocity = _direction.normalized * _speed;
-  //   }
-   //   _rigidbody.velocity = _direction.normalized * _speed;
-   
-
   }
   
     public void StartMove( Vector2 direction )
@@ -132,6 +119,7 @@ public class BallMover : MonoBehaviour
       _isMove = true;
       _direction = (Vector3)direction.normalized * _speed;
       _rigidbody.velocity = _direction;
+      //_rigidbody.AddForce( _direction.normalized * _speedValue, ForceMode2D.Impulse);
    }
 
     public void StopMove()
@@ -139,7 +127,6 @@ public class BallMover : MonoBehaviour
        _isMove = false;
       _direction = Vector2.zero;
       _rigidbody.velocity = _direction;
-          //  Debug.Log("STOP"+_rigidbody.velocity);
     }
 
    
@@ -150,7 +137,11 @@ public class BallMover : MonoBehaviour
        var angleRandom = UnityEngine.Random.Range(5,10);
        _direction = Quaternion.Euler(0,0,angleRandom) * _direction;
       _angleNormalReflect = (int) Vector2.Angle(_direction, _normal );
-      _rigidbody.velocity = _direction.normalized * _speed;
+    // _rigidbody.velocity = _direction.normalized * _speed;
+    
+    _rigidbody.AddForce( _direction.normalized * _speedValue, ForceMode2D.Impulse);
+    var dir = _rigidbody.velocity;
+   // _rigidbody.velocity = dir.normalized;
     // _direction = _direction.normalized * _speed;
    }
 
@@ -168,7 +159,11 @@ public class BallMover : MonoBehaviour
       {
           _direction = Quaternion.Euler(0,0, 15) * _direction;
       }
-      _rigidbody.velocity = _direction.normalized * _speed;
+    //  _rigidbody.velocity = _direction.normalized * _speed;
+    //_rigidbody.velocity = Vector2.zero;
+    _rigidbody.AddForce( _direction.normalized * _speedValue, ForceMode2D.Impulse);
+    var dir = _rigidbody.velocity;
+   // _rigidbody.velocity = dir.normalized;
    }
 
 
@@ -200,7 +195,13 @@ public class BallMover : MonoBehaviour
       _rigidbody.velocity = _direction.normalized * _speed;
    }
 
-/*   
+   private void FixedUpdate()
+   {
+       //_rigidbody.velocity = _direction.normalized * Time.fixedDeltaTime * 300f;
+   }
+   
+
+   /*   
    private void FixedUpdate()
   {
 

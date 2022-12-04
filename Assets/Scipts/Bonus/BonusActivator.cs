@@ -11,12 +11,12 @@ public class BonusActivator : MonoBehaviour
 
    private void OnEnable()
    {
-     _board.OnReproductionTwo += DoReproductionTwo;
+     //_board.OnReproductionTwo += DoReproductionTwo;
    }
 
    private void OnDisable()
    {
-      _board.OnReproductionTwo -= DoReproductionTwo;
+      //_board.OnReproductionTwo -= DoReproductionTwo;
    }
 
    private void DoReproductionOne()

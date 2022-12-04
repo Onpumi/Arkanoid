@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2444629902041871678}
   - component: {fileID: -1520916752496833405}
   - component: {fileID: -160822975432926894}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: BrickBrake
   m_TagString: Untagged
   m_Icon: {fileID: 0}
